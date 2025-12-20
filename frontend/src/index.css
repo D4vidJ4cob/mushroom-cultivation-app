@@ -1,0 +1,24 @@
+/* src/index.css */
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html, body {
+  @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-white;
+  min-height: 100vh;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    color-scheme: light;
+  }
+
+  .dark input,
+  .dark select,
+  .dark textarea,
+  .dark button {
+    color-scheme: dark;
+  }
+}

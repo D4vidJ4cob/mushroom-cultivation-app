@@ -1,0 +1,4 @@
+ignoredBuiltDependencies:
+  - '@swc/core'
+  - cypress
+  - esbuild

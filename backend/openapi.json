@@ -1,0 +1,1383 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["App"]
+      }
+    },
+    "/api/health/ping": {
+      "get": {
+        "operationId": "HealthController_ping",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Health"]
+      }
+    },
+    "/api/species": {
+      "get": {
+        "operationId": "SpeciesController_getAllSpecies",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all species",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpeciesListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Species"]
+      },
+      "post": {
+        "operationId": "SpeciesController_createSpecies",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSpeciesRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create species",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SpeciesResponseDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Species"]
+      }
+    },
+    "/api/species/{id}": {
+      "get": {
+        "operationId": "SpeciesController_getSpeciesById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get species by ID",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SpeciesResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "Species not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Species"]
+      },
+      "put": {
+        "operationId": "SpeciesController_updateSpeciesById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSpeciesRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update species",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SpeciesResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "404": { "description": "Species not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Species"]
+      },
+      "delete": {
+        "operationId": "SpeciesController_deleteSpeciesById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Delete species" },
+          "404": { "description": "Species not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Species"]
+      }
+    },
+    "/api/mother-cultures": {
+      "get": {
+        "operationId": "MotherCultureController_getAllMotherCultures",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all cultures",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MotherCultureListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Mother Cultures"]
+      },
+      "post": {
+        "operationId": "MotherCultureController_createMotherCulture",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMotherCultureRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create culture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MotherCultureDetailResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Mother Cultures"]
+      }
+    },
+    "/api/mother-cultures/{id}": {
+      "get": {
+        "operationId": "MotherCultureController_getMotherCultureById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get culture by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MotherCultureDetailResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "Culture not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Mother Cultures"]
+      },
+      "put": {
+        "operationId": "MotherCultureController_updateMotherCultureById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMotherCultureRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update culture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MotherCultureDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "404": { "description": "Culture not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Mother Cultures"]
+      },
+      "delete": {
+        "operationId": "MotherCultureController_deleteMotherCultureById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Delete culture" },
+          "404": { "description": "Culture not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Mother Cultures"]
+      }
+    },
+    "/api/liquid-cultures": {
+      "get": {
+        "operationId": "LiquidCultureController_getAllLiquidCultures",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all cultures",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiquidCultureListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Liquid Cultures"]
+      },
+      "post": {
+        "operationId": "LiquidCultureController_createLiquidCulture",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLiquidCultureRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create culture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiquidCultureDetailResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Liquid Cultures"]
+      }
+    },
+    "/api/liquid-cultures/{id}": {
+      "get": {
+        "operationId": "LiquidCultureController_getLiquidCultureById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get culture by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiquidCultureDetailResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "Culture not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Liquid Cultures"]
+      },
+      "put": {
+        "operationId": "LiquidCultureController_updateLiquidCultureById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLiquidCultureRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update culture",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiquidCultureDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "404": { "description": "Culture not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Liquid Cultures"]
+      },
+      "delete": {
+        "operationId": "LiquidCultureController_deleteLiquidCulture",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Delete culture" },
+          "404": { "description": "Culture not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Liquid Cultures"]
+      }
+    },
+    "/api/grain-spawns": {
+      "get": {
+        "operationId": "GrainSpawnController_getAllGrainSpawns",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all grain spawns",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrainSpawnsListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Grain Spawns"]
+      },
+      "post": {
+        "operationId": "GrainSpawnController_createGrainSpawn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGrainSpawnRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create grain spawn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrainSpawnDetailResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Grain Spawns"]
+      }
+    },
+    "/api/grain-spawns/{id}": {
+      "get": {
+        "operationId": "GrainSpawnController_getGrainSpawnById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get grain spawn by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrainSpawnDetailResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "Grain sapwn not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Grain Spawns"]
+      },
+      "put": {
+        "operationId": "GrainSpawnController_updateGrainSpawnById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGrainSpawnRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update grain spawn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GrainSpawnDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "404": { "description": "Grain spawn not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Grain Spawns"]
+      },
+      "delete": {
+        "operationId": "GrainSpawnController_deleteGrainSpawn",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Delete grain spawn" },
+          "404": { "description": "Grain spawn not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Grain Spawns"]
+      }
+    },
+    "/api/substrates": {
+      "get": {
+        "operationId": "SubstrateController_getAllSubstrates",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all substrates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubstrateListResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Substrates"]
+      },
+      "post": {
+        "operationId": "SubstrateController_createSubstrate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSubstrateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Create substrates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubstrateDetailResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Substrates"]
+      }
+    },
+    "/api/substrates/{id}": {
+      "get": {
+        "operationId": "SubstrateController_getSubstrateById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get substrates by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubstrateDetailResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "Substrates not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Substrates"]
+      },
+      "put": {
+        "operationId": "SubstrateController_updateSubstrateById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSubstrateRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update substrates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubstrateDetailResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "404": { "description": "Substrates not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Substrates"]
+      },
+      "delete": {
+        "operationId": "SubstrateController_deleteSubstrateById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Delete substrates" },
+          "404": { "description": "Substrates not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Substrates"]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "operationId": "UserController_getAllUsers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Get all users",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/UserListResponseDto" }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "403": { "description": "Forbidden" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Users"]
+      },
+      "post": {
+        "operationId": "UserController_registerUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterUserRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Register",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Users"]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "operationId": "UserController_getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "example": "me", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get user by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicUserResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "User not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Users"]
+      },
+      "put": {
+        "operationId": "UserController_updateUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "example": "me", "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateUserRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Update user by ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicUserResponseDto"
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "User not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Users"]
+      },
+      "delete": {
+        "operationId": "UserController_deleteUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "example": "me", "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "Delete user" },
+          "401": { "description": "Unauthorized - you need to be signed in" },
+          "404": { "description": "User not found" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Users"]
+      }
+    },
+    "/api/users/{id}/substrate-assignments": {
+      "get": {
+        "operationId": "UserController_getSubstrateAssignments",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "example": "me", "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Get all the substrates that a user made",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubstrateListResponseDto"
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized - you need to be signed in" }
+        },
+        "security": [{ "bearer": [] }],
+        "tags": ["Users"]
+      }
+    },
+    "/api/sessions": {
+      "post": {
+        "operationId": "SessionController_signIn",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "login",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LoginResponseDto" }
+              }
+            }
+          },
+          "400": { "description": "Invalid input data" },
+          "401": { "description": "Invalid credentials" }
+        },
+        "tags": ["sessions"]
+      }
+    }
+  },
+  "info": {
+    "title": "Cultivation App",
+    "description": "Cultivation API",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": { "scheme": "bearer", "bearerFormat": "JWT", "type": "http" }
+    },
+    "schemas": {
+      "SpeciesListResponseDto": { "type": "object", "properties": {} },
+      "SpeciesResponseDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the species"
+          }
+        },
+        "required": ["name", "id"]
+      },
+      "CreateSpeciesRequestDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "maxLength": 255 } },
+        "required": ["name"]
+      },
+      "UpdateSpeciesRequestDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "maxLength": 255 } },
+        "required": ["name"]
+      },
+      "LiquidCultureResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the culture"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mushroom mania",
+            "description": "Name of the culture"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-01-20T00:00:00.000Z",
+            "description": "Date when culture was inoculated",
+            "format": "date-time"
+          },
+          "contaminationStatus": {
+            "type": "boolean",
+            "example": true,
+            "description": "Contamination status of the culture",
+            "nullable": true
+          },
+          "speciesId": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the species"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inoculationDate",
+          "contaminationStatus",
+          "speciesId"
+        ]
+      },
+      "MotherCultureListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LiquidCultureResponseDto" }
+          }
+        },
+        "required": ["items"]
+      },
+      "MotherCultureDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the culture"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mushroom mania",
+            "description": "Name of the culture"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-01-20T00:00:00.000Z",
+            "description": "Date when culture was inoculated",
+            "format": "date-time"
+          },
+          "speciesId": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the species"
+          },
+          "characteristic": {
+            "type": "object",
+            "example": "Grow room clone",
+            "description": "Extra information about the culture",
+            "nullable": true
+          },
+          "species": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SpeciesResponseDto" }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inoculationDate",
+          "speciesId",
+          "characteristic",
+          "species"
+        ]
+      },
+      "CreateMotherCultureRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "characteristic": { "type": "string", "maxLength": 255 },
+          "speciesId": { "type": "number", "minimum": 1 }
+        },
+        "required": ["name", "characteristic", "speciesId"]
+      },
+      "UpdateMotherCultureRequestDto": { "type": "object", "properties": {} },
+      "LiquidCultureListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LiquidCultureResponseDto" }
+          }
+        },
+        "required": ["items"]
+      },
+      "LiquidCultureDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the culture"
+          },
+          "name": {
+            "type": "string",
+            "example": "Mushroom mania",
+            "description": "Name of the culture"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-01-20T00:00:00.000Z",
+            "description": "Date when culture was inoculated",
+            "format": "date-time"
+          },
+          "contaminationStatus": {
+            "type": "boolean",
+            "example": true,
+            "description": "Contamination status of the culture",
+            "nullable": true
+          },
+          "speciesId": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the species"
+          },
+          "characteristic": {
+            "type": "object",
+            "example": "USA",
+            "description": "Extra information about the culture",
+            "nullable": true
+          },
+          "species": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SpeciesResponseDto" }
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "inoculationDate",
+          "contaminationStatus",
+          "speciesId",
+          "characteristic",
+          "species"
+        ]
+      },
+      "CreateLiquidCultureRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "maxLength": 255 },
+          "characteristic": { "type": "string", "maxLength": 255 },
+          "contamination status": { "type": "boolean" },
+          "speciesId": { "type": "number", "minimum": 1 }
+        },
+        "required": [
+          "name",
+          "characteristic",
+          "contamination status",
+          "speciesId"
+        ]
+      },
+      "UpdateLiquidCultureRequestDto": { "type": "object", "properties": {} },
+      "GrainSpawnResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the grain spawn"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-01-25T00:00:00.000Z",
+            "description": "Date when grain spawn was inoculated",
+            "format": "date-time"
+          },
+          "contaminationStatus": {
+            "type": "boolean",
+            "example": false,
+            "description": "Contamination status of the grain spawn",
+            "nullable": true
+          },
+          "shaken": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the grain spawn has been shaken",
+            "nullable": true
+          },
+          "motherCultureId": {
+            "type": "object",
+            "example": 1,
+            "description": "ID of the mother culture used",
+            "nullable": true
+          },
+          "liquidCultureId": {
+            "type": "object",
+            "example": null,
+            "description": "ID of the liquid culture used",
+            "nullable": true
+          },
+          "species": { "$ref": "#/components/schemas/SpeciesResponseDto" }
+        },
+        "required": [
+          "id",
+          "inoculationDate",
+          "contaminationStatus",
+          "shaken",
+          "motherCultureId",
+          "liquidCultureId",
+          "species"
+        ]
+      },
+      "GrainSpawnsListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/GrainSpawnResponseDto" }
+          }
+        },
+        "required": ["items"]
+      },
+      "GrainSpawnDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the grain spawn"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-01-25T00:00:00.000Z",
+            "description": "Date when grain spawn was inoculated",
+            "format": "date-time"
+          },
+          "contaminationStatus": {
+            "type": "boolean",
+            "example": false,
+            "description": "Contamination status of the grain spawn",
+            "nullable": true
+          },
+          "shaken": {
+            "type": "boolean",
+            "example": true,
+            "description": "Whether the grain spawn has been shaken",
+            "nullable": true
+          },
+          "motherCultureId": {
+            "type": "object",
+            "example": 1,
+            "description": "ID of the mother culture used",
+            "nullable": true
+          },
+          "liquidCultureId": {
+            "type": "object",
+            "example": null,
+            "description": "ID of the liquid culture used",
+            "nullable": true
+          },
+          "species": { "$ref": "#/components/schemas/SpeciesResponseDto" },
+          "characteristic": {
+            "type": "object",
+            "example": "This grain has been soaked",
+            "description": "Extra characteristics of the grain spawn",
+            "nullable": true
+          }
+        },
+        "required": [
+          "id",
+          "inoculationDate",
+          "contaminationStatus",
+          "shaken",
+          "motherCultureId",
+          "liquidCultureId",
+          "species",
+          "characteristic"
+        ]
+      },
+      "CreateGrainSpawnRequestDto": {
+        "type": "object",
+        "properties": {
+          "speciesId": { "type": "number", "minimum": 1 },
+          "characteristic": { "type": "string", "maxLength": 255 },
+          "contaminationStatus": { "type": "boolean" },
+          "shaken": { "type": "boolean" },
+          "motherCultureId": { "type": "number", "minimum": 1 },
+          "liquidCultureId": { "type": "number", "minimum": 1 }
+        },
+        "required": [
+          "speciesId",
+          "characteristic",
+          "contaminationStatus",
+          "shaken",
+          "motherCultureId",
+          "liquidCultureId"
+        ]
+      },
+      "UpdateGrainSpawnRequestDto": { "type": "object", "properties": {} },
+      "SubstrateResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the substrate"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-02-01T00:00:00.000Z",
+            "description": "Date when substrate was inoculated",
+            "format": "date-time"
+          },
+          "incubationDate": {
+            "type": "string",
+            "example": "2025-02-15T00:00:00.000Z",
+            "description": "Date when substrate started incubation",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "contaminationStatus": {
+            "type": "boolean",
+            "example": false,
+            "description": "Contamination status of the substrate",
+            "nullable": true
+          },
+          "grainSpawnId": {
+            "type": "number",
+            "example": 1,
+            "description": "ID of the grain spawn used"
+          }
+        },
+        "required": [
+          "id",
+          "inoculationDate",
+          "incubationDate",
+          "contaminationStatus",
+          "grainSpawnId"
+        ]
+      },
+      "SubstrateListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SubstrateResponseDto" }
+          }
+        },
+        "required": ["items"]
+      },
+      "SubstrateDetailResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "Unique identifier of the substrate"
+          },
+          "inoculationDate": {
+            "type": "string",
+            "example": "2025-02-01T00:00:00.000Z",
+            "description": "Date when substrate was inoculated",
+            "format": "date-time"
+          },
+          "incubationDate": {
+            "type": "string",
+            "example": "2025-02-15T00:00:00.000Z",
+            "description": "Date when substrate started incubation",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "contaminationStatus": {
+            "type": "boolean",
+            "example": false,
+            "description": "Contamination status of the substrate",
+            "nullable": true
+          },
+          "grainSpawnId": {
+            "type": "number",
+            "example": 1,
+            "description": "ID of the grain spawn used"
+          },
+          "grainSpawn": { "$ref": "#/components/schemas/GrainSpawnResponseDto" }
+        },
+        "required": [
+          "id",
+          "inoculationDate",
+          "incubationDate",
+          "contaminationStatus",
+          "grainSpawnId",
+          "grainSpawn"
+        ]
+      },
+      "CreateSubstrateRequestDto": {
+        "type": "object",
+        "properties": {
+          "grainSpawnId": { "type": "number", "minimum": 1 },
+          "contaminationStatus": { "type": "boolean" }
+        },
+        "required": ["grainSpawnId", "contaminationStatus"]
+      },
+      "UpdateSubstrateRequestDto": { "type": "object", "properties": {} },
+      "PublicUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "description": "User ID",
+            "minimum": 1,
+            "example": 1
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "minLength": 2,
+            "maxLength": 255,
+            "example": "John Doe"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email address",
+            "example": "user@email.com",
+            "format": "email"
+          }
+        },
+        "required": ["id", "name", "email"]
+      },
+      "UserListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PublicUserResponseDto" }
+          }
+        },
+        "required": ["items"]
+      },
+      "RegisterUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 255 },
+          "email": { "type": "string", "example": "user@email.com" },
+          "password": { "type": "string", "minLength": 8, "maxLength": 128 }
+        },
+        "required": ["name", "email", "password"]
+      },
+      "LoginResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "JWT token for authentication"
+          }
+        },
+        "required": ["token"]
+      },
+      "UpdateUserRequestDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "minLength": 2, "maxLength": 255 },
+          "email": { "type": "string", "example": "user@email.com" }
+        },
+        "required": ["name", "email"]
+      },
+      "LoginRequestDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "example": "user@email.com" },
+          "password": { "type": "string", "minLength": 8, "maxLength": 128 }
+        },
+        "required": ["email", "password"]
+      }
+    }
+  }
+}
