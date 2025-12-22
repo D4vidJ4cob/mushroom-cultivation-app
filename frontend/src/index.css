@@ -22,3 +22,14 @@
     color-scheme: dark;
   }
 }
+
+@layer components {
+  .page-container {
+    @apply min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 
+    dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 p-6;
+  }
+  .icon-badge {
+    @apply p-3 bg-gradient-to-br from-teal-400 to-cyan-500 dark:from-teal-500 
+          dark:to-cyan-600 rounded-2xl shadow-lg
+  }
+}

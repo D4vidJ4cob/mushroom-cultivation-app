@@ -23,13 +23,11 @@ export default function SpeciesList() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 
-    via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 p-6">
+    <div className="page-container">
       
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex items-center gap-4 mb-2">
-          <div className="p-3 bg-gradient-to-br from-teal-400 to-cyan-500 
-          dark:from-teal-500 dark:to-cyan-600 rounded-2xl shadow-lg">
+          <div className="icon-badge">
             <FaFlask className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-5xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 
