@@ -14,7 +14,7 @@ const SpeciesDetail = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 
     to-indigo-100 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 p-6 
     flex items-center justify-center">
       
@@ -26,13 +26,13 @@ const SpeciesDetail = () => {
               <div>
                 {/* Icon */}
                 <div className="inline-flex items-center justify-center w-24 h-24 rounded-full 
-                bg-gradient-to-br from-teal-400 to-cyan-500 dark:from-teal-500 dark:to-cyan-600 
+                bg-linear-to-br from-teal-400 to-cyan-500 dark:from-teal-500 dark:to-cyan-600 
                 mb-8 shadow-2xl">
                   <FaDna className="w-12 h-12 text-white" />
                 </div>
                 
                 {/* Species Name */}
-                <h1 className="text-5xl font-bold bg-gradient-to-r from-teal-600 
+                <h1 className="text-5xl font-bold bg-linear-to-r from-teal-600 
                 to-cyan-600 dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent mb-6 
                 leading-tight">
                   {species.name}

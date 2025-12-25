@@ -55,7 +55,7 @@ export default function SpeciesForm({species, saveSpecies, isEditing}) {
         <button 
           type='submit' 
           className='px-6 py-3 rounded-xl font-semibold
-          bg-gradient-to-r from-teal-500 to-cyan-500 
+          bg-linear-to-r from-teal-500 to-cyan-500 
           hover:from-teal-600 hover:to-cyan-600
           dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500
           text-white shadow-lg hover:shadow-xl

@@ -29,10 +29,11 @@ export default function MotherCulturesList() {
       {/* Header */}
       <div className="max-w-7xl mx-auto mb-8">
         <div className="flex items-center gap-4 mb-2">
-          <div className="icon-badge">
+          <div className="icon-badge bg-linear-to-br from-teal-400 to-cyan-500 dark:from-teal-500 
+          dark:to-cyan-600">
             <FaFlask className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-5xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 
+          <h1 className="text-5xl font-bold bg-linear-to-r from-teal-600 to-cyan-600 
           dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
             Mother Cultures
           </h1>
@@ -44,8 +45,7 @@ export default function MotherCulturesList() {
 
       {/* Main content */}
       <div className="max-w-7xl mx-auto">
-        <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-800/70 rounded-3xl shadow-2xl border 
-        border-white/20 dark:border-gray-700/30 p-8">
+        <div className="content-card">
           
           <div className="mb-8">
             <SearchBar

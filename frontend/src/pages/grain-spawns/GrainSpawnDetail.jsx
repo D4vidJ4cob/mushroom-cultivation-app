@@ -3,8 +3,8 @@ import useSWR from 'swr';
 import { getById } from '../../api';
 import AsyncData from '../../components/AsyncData';
 import {
-    FaSeedling, FaCalendar, FaDna, FaExclamationTriangle, FaFlask,
-    FaCheckCircle, FaTimesCircle, FaBoxes,
+  FaSeedling, FaCalendar, FaDna, FaExclamationTriangle, FaFlask,
+  FaCheckCircle, FaTimesCircle, FaBoxes,
 } from 'react-icons/fa';
 import { Link } from 'react-router';
 
@@ -25,7 +25,7 @@ const GrainSpawnDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 
     to-indigo-100 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 p-6">
       
       <div className="max-w-4xl mx-auto">
@@ -35,12 +35,12 @@ const GrainSpawnDetail = () => {
             {grainSpawn && (
               <div>
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="p-3 bg-gradient-to-br from-amber-400 to-orange-500 
-                  dark:from-amber-500 dark:to-orange-600 rounded-2xl shadow-lg">
+                  <div className="icon-badge bg-linear-to-br from-amber-400 to-orange-500 
+                  dark:from-amber-500 dark:to-orange-600 ">
                     <FaSeedling className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-amber-600 
+                    <h1 className="text-4xl font-bold bg-linear-to-r from-amber-600 
                     to-orange-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent">
                       Grain Spawn #{grainSpawn.id}
                     </h1>
@@ -52,7 +52,7 @@ const GrainSpawnDetail = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   {/* Species */}
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-amber-50 to-orange-50 
+                  <div className="p-6 rounded-xl bg-linear-to-br from-amber-50 to-orange-50 
                   dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200/50 dark:border-amber-700/50">
                     <div className="flex items-center gap-3 mb-2">
                       <FaDna className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -64,7 +64,7 @@ const GrainSpawnDetail = () => {
                   </div>
                   
                   {/* Inoculation Date */}
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 
+                  <div className="p-6 rounded-xl bg-linear-to-br from-blue-50 to-indigo-50 
                   dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/50 dark:border-blue-700/50">
                     <div className="flex items-center gap-3 mb-2">
                       <FaCalendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />

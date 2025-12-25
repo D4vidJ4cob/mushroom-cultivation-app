@@ -25,7 +25,7 @@ const ThemeToggle = () => {
   const {darkmode, toggleDarkmode} = useTheme();
   return (
     <button 
-      className='p-2.5 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 
+      className='p-2.5 rounded-xl bg-linear-to-br from-gray-100 to-gray-200 
       dark:from-gray-700 dark:to-gray-800
       hover:from-teal-100 hover:to-cyan-100 dark:hover:from-teal-900/30 dark:hover:to-cyan-900/30
       transform hover:scale-110 active:scale-95 transition-all duration-300
@@ -50,7 +50,7 @@ const AuthButtons = () => {
       <Link 
         to='/logout' data-cy='logout_btn'
         className='px-5 py-2.5 rounded-xl font-semibold
-        bg-gradient-to-r from-red-500 to-rose-500 
+        bg-linear-to-r from-red-500 to-rose-500 
         hover:from-red-600 hover:to-rose-600
         dark:from-red-600 dark:to-rose-600 dark:hover:from-red-500 dark:hover:to-rose-500
         text-white shadow-md hover:shadow-lg
@@ -65,7 +65,7 @@ const AuthButtons = () => {
       <Link 
         to='/login' 
         className='px-5 py-2.5 rounded-xl font-semibold
-        bg-gradient-to-r from-teal-500 to-cyan-500 
+        bg-linear-to-r from-teal-500 to-cyan-500 
         hover:from-teal-600 hover:to-cyan-600
         dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500
         text-white shadow-md hover:shadow-lg
@@ -102,7 +102,7 @@ export default function Navbar() {
             <div className="text-4xl transform group-hover:scale-110 transition-transform duration-300">
               🍄
             </div>
-            <span className="font-bold text-2xl bg-gradient-to-r from-teal-600 to-cyan-600 
+            <span className="font-bold text-2xl bg-linear-to-r from-teal-600 to-cyan-600 
             dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent
             group-hover:from-teal-500 group-hover:to-cyan-500
             dark:group-hover:from-teal-300 dark:group-hover:to-cyan-300
@@ -115,7 +115,7 @@ export default function Navbar() {
         {/* Mobile menu button */}
         <div className="lg:hidden">
           <button 
-            className="p-3 rounded-xl bg-gradient-to-br from-teal-100 to-cyan-100 
+            className="p-3 rounded-xl bg-linear-to-br from-teal-100 to-cyan-100 
             dark:from-teal-900/30 dark:to-cyan-900/30
             hover:from-teal-200 hover:to-cyan-200 dark:hover:from-teal-900/50 dark:hover:to-cyan-900/50
             transform hover:scale-110 active:scale-95 transition-all duration-300
@@ -170,7 +170,7 @@ export default function Navbar() {
               <span className="text-3xl transform group-hover:scale-110 transition-transform duration-300">
                 🍄
               </span>
-              <span className="font-bold text-xl bg-gradient-to-r from-teal-600 to-cyan-600 
+              <span className="font-bold text-xl bg-linear-to-r from-teal-600 to-cyan-600 
               dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
                 Mushroom Cultivation
               </span>
@@ -199,7 +199,7 @@ export default function Navbar() {
               <NavItem 
                 to="/species" 
                 options="flex items-center gap-3 p-4 text-base font-semibold 
-                rounded-xl hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 
+                rounded-xl hover:bg-linear-to-r hover:from-teal-50 hover:to-cyan-50 
                 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20
                 transition-all duration-300"
               >
@@ -209,7 +209,7 @@ export default function Navbar() {
               <NavItem 
                 to="/mother-cultures" 
                 options="flex items-center gap-3 p-4 text-base font-semibold 
-                rounded-xl hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 
+                rounded-xl hover:bg-linear-to-r hover:from-teal-50 hover:to-cyan-50 
                 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20
                 transition-all duration-300"
               >
@@ -219,7 +219,7 @@ export default function Navbar() {
               <NavItem 
                 to="/liquid-cultures" 
                 options="flex items-center gap-3 p-4 text-base font-semibold 
-                rounded-xl hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 
+                rounded-xl hover:bg-linear-to-r hover:from-teal-50 hover:to-cyan-50 
                 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20
                 transition-all duration-300"
               >
@@ -229,7 +229,7 @@ export default function Navbar() {
               <NavItem 
                 to="/grain-spawns" 
                 options="flex items-center gap-3 p-4 text-base font-semibold 
-                rounded-xl hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 
+                rounded-xl hover:bg-linear-to-r hover:from-teal-50 hover:to-cyan-50 
                 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20
                 transition-all duration-300"
               >
@@ -239,7 +239,7 @@ export default function Navbar() {
               <NavItem 
                 to="/substrates" 
                 options="flex items-center gap-3 p-4 text-base font-semibold 
-                rounded-xl hover:bg-gradient-to-r hover:from-teal-50 hover:to-cyan-50 
+                rounded-xl hover:bg-linear-to-r hover:from-teal-50 hover:to-cyan-50 
                 dark:hover:from-teal-900/20 dark:hover:to-cyan-900/20
                 transition-all duration-300"
               >

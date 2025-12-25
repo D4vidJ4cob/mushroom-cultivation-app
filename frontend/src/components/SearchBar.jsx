@@ -25,7 +25,7 @@ export default function SearchBar({ searchTerm, onSearchChange, addLink, addButt
       <Link 
         to={addLink}
         data-cy="add_species_btn" 
-        className="group relative px-6 py-3.5 bg-gradient-to-r from-teal-500 to-cyan-500 
+        className="group relative px-6 py-3.5 bg-linear-to-r from-teal-500 to-cyan-500 
         hover:from-teal-600 hover:to-cyan-600
         dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500
         text-white font-semibold rounded-2xl shadow-lg hover:shadow-xl

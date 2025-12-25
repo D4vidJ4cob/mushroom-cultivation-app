@@ -6,7 +6,7 @@ export default function MotherCulturesTable({cultureData, onEdit, onDelete}) {
     return (
       <div className="text-center py-16 px-4">
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full 
-        bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/30 dark:to-cyan-900/30 mb-6">
+        bg-linear-to-br from-teal-100 to-cyan-100 dark:from-teal-900/30 dark:to-cyan-900/30 mb-6">
           <FaFlask className="w-10 h-10 text-teal-500 dark:text-teal-400" />
         </div>
         <p className="text-gray-600 dark:text-gray-400 text-xl font-medium">No mother cultures found</p>
@@ -21,7 +21,7 @@ export default function MotherCulturesTable({cultureData, onEdit, onDelete}) {
     <div className="overflow-hidden rounded-2xl border border-gray-200/50 dark:border-gray-700/50">
       <table className="w-full">
         <thead>
-          <tr className="bg-gradient-to-r from-teal-50 to-cyan-50 
+          <tr className="bg-linear-to-r from-teal-50 to-cyan-50 
           dark:from-gray-800/80 dark:to-gray-800/60 
           border-b border-gray-200/50 dark:border-gray-700/50" data-cy="mother_culture">
             

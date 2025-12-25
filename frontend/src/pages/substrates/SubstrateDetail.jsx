@@ -23,7 +23,7 @@ const SubstrateDetail = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 
+    <div className="min-h-screen bg-linear-to-br from-slate-50 via-blue-50 
     to-indigo-100 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 p-6">
       
       <div className="max-w-4xl mx-auto">
@@ -34,12 +34,12 @@ const SubstrateDetail = () => {
               <div>
                 {/* Header */}
                 <div className="flex items-center gap-4 mb-8">
-                  <div className="p-3 bg-gradient-to-br from-indigo-400 to-purple-500 
+                  <div className="p-3 bg-linear-to-br from-indigo-400 to-purple-500 
                   dark:from-indigo-500 dark:to-purple-600 rounded-2xl shadow-lg">
                     <FaBoxes className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 
+                    <h1 className="text-4xl font-bold bg-linear-to-r from-indigo-600 
                     to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
                       Substrate #{substrate.id}
                     </h1>
@@ -51,7 +51,7 @@ const SubstrateDetail = () => {
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   {/* Inoculation Date */}
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 
+                  <div className="p-6 rounded-xl bg-linear-to-br from-blue-50 to-indigo-50 
                   dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/50 dark:border-blue-700/50">
                     <div className="flex items-center gap-3 mb-2">
                       <FaCalendar className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -63,7 +63,7 @@ const SubstrateDetail = () => {
                   </div>
                   
                   {/* Incubation Date */}
-                  <div className="p-6 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 
+                  <div className="p-6 rounded-xl bg-linear-to-br from-purple-50 to-pink-50 
                   dark:from-purple-900/20 dark:to-pink-900/20 border border-purple-200/50 dark:border-purple-700/50">
                     <div className="flex items-center gap-3 mb-2">
                       <FaCalendar className="w-5 h-5 text-purple-600 dark:text-purple-400" />
