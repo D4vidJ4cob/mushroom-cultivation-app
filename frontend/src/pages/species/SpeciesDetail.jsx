@@ -19,8 +19,7 @@ const SpeciesDetail = () => {
     flex items-center justify-center">
       
       <div className="w-full max-w-md">
-        <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-800/70 
-        rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/30 p-12 text-center">
+        <div className="content-card">
           <AsyncData error={error} loading={isLoading}>
             {species && (
               <div>

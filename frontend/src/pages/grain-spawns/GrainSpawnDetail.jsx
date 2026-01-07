@@ -29,8 +29,7 @@ const GrainSpawnDetail = () => {
     to-indigo-100 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 p-6">
       
       <div className="max-w-4xl mx-auto">
-        <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-800/70 
-        rounded-3xl shadow-2xl border border-white/20 dark:border-gray-700/30 p-8">
+        <div className="content-card">
           <AsyncData error={error} loading={isLoading}>
             {grainSpawn && (
               <div>

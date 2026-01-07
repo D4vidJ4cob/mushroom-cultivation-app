@@ -33,12 +33,11 @@ export default function LiquidCulturesList() {
           dark:to-cyan-600">
             <FaFlask className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-5xl font-bold bg-linear-to-r from-teal-600 to-cyan-600 
-          dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="page-header-title">
             Liquid Cultures
           </h1>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 ml-20 text-lg">
+        <p className="page-header-subtitle">
           Manage your liquid culture collection
         </p>
       </div>

@@ -31,19 +31,17 @@ export default function SpeciesList() {
           dark:to-cyan-600">
             <FaFlask className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-5xl font-bold bg-linear-to-r from-teal-600 to-cyan-600 
-          dark:from-teal-400 dark:to-cyan-400 bg-clip-text text-transparent">
+          <h1 className="page-header-title">
             Species
           </h1>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 ml-20 text-lg">
+        <p className="page-header-subtitle">
           Manage your mushroom species collection
         </p>
       </div>
 
       <div className="max-w-7xl mx-auto">
-        <div className="backdrop-blur-xl bg-white/70 dark:bg-gray-800/70 rounded-3xl shadow-2xl border 
-        border-white/20 dark:border-gray-700/30 p-8">
+        <div className="content-card">
           
           <div className="mb-8">
             <SearchBar
