@@ -4,7 +4,7 @@ import { useTheme } from '../contexts';
 import { IoSunny, IoMoonSharp } from 'react-icons/io5';
 import { useAuth } from '../contexts/auth';
 import { useNavigate } from 'react-router';
-import QRScanner from './QRScanner';
+import QRScanner from './qrcode/QRScanner';
 
 const NavItem = ({ to, children, options }) => {
   return (
@@ -84,6 +84,7 @@ export default function Navbar() {
   const [isNavbarOpen, setIsNavbarOpen] = useState(false);
   const [showScanner, setShowScanner] = useState(false);
   const navigate = useNavigate();
+  const {isAuthed} = useAuth();
 
   const toggleNavbar = () => {
     setIsNavbarOpen(!isNavbarOpen);
@@ -162,17 +163,15 @@ export default function Navbar() {
         </ul>
         
         <div className='hidden lg:flex items-center gap-3'>
-          <button 
-            onClick={() => setShowScanner(true)}
-            className="p-2.5 rounded-xl bg-linear-to-br from-gray-100 to-gray-200 
-            dark:from-gray-700 dark:to-gray-800
-            hover:from-teal-100 hover:to-cyan-100 dark:hover:from-teal-900/30 dark:hover:to-cyan-900/30
-            transform hover:scale-110 active:scale-95 transition-all duration-300
-            shadow-md hover:shadow-lg"
-            aria-label="Scan QR Code"
-          >
-            📷
-          </button>
+          {isAuthed && (
+            <button 
+              onClick={() => setShowScanner(true)}
+              className="p-2.5 rounded-xl ..."
+              aria-label="Scan QR Code"
+            >
+              📷
+            </button>
+          )}
           <AuthButtons />
           <ThemeToggle />
         </div>
@@ -284,20 +283,18 @@ export default function Navbar() {
           {/* Mobile Auth & Theme Toggle */}
           <div className="pt-6 border-t border-gray-200 dark:border-gray-700 mt-6">
             <div className="flex items-center gap-3">
-              <button 
-                onClick={() => {
-                  setShowScanner(true);
-                  toggleNavbar();
-                }}
-                className="p-2.5 rounded-xl bg-linear-to-br from-gray-100 to-gray-200 
-                dark:from-gray-700 dark:to-gray-800
-                hover:from-teal-100 hover:to-cyan-100 dark:hover:from-teal-900/30 dark:hover:to-cyan-900/30
-                transform hover:scale-110 active:scale-95 transition-all duration-300
-                shadow-md"
-                aria-label="Scan QR Code"
-              >
-                📷
-              </button>
+              {isAuthed && (
+                <button 
+                  onClick={() => {
+                    setShowScanner(true);
+                    toggleNavbar();
+                  }}
+                  className="p-2.5 rounded-xl ..."
+                  aria-label="Scan QR Code"
+                >
+                  📷
+                </button>
+              )}
               <div className="flex-1">
                 <AuthButtons />
               </div>

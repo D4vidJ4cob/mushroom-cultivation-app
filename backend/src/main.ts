@@ -56,7 +56,7 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({
-    origin: [cors.origins],
+    origin: cors.origins,
     maxAge: cors.maxAge,
     credentials: true,
   });

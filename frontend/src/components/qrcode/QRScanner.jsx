@@ -1,10 +1,12 @@
 import { Html5QrcodeScanner } from 'html5-qrcode';
 import { useEffect } from 'react';
+import { useAuth } from '../../contexts/auth';
 
 export default function QRScanner({ onScan, onClose }) {
+  const { isAuthed } = useAuth();
 
   useEffect(() => {
-
+    if (!isAuthed) return;
     const scanner = new Html5QrcodeScanner('reader', {
       qrbox: {
         width: 250,
@@ -16,8 +18,7 @@ export default function QRScanner({ onScan, onClose }) {
     scanner.render(success, error);
 
     function success(result) {
-      scanner.clear();
-      onScan(result);
+      scanner.clear().then(() => onScan(result));
     }
 
     function error(err) {
@@ -27,9 +28,10 @@ export default function QRScanner({ onScan, onClose }) {
     }
 
     return () => {
-      scanner.clear().catch((err) => console.error('Failed to clear scanner:', err));
+      scanner.clear().catch(() => {});
     };
-  }, [onScan]);
+
+  }, [isAuthed]);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
