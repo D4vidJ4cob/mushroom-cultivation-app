@@ -37,11 +37,13 @@ export const updateById = async (url, { arg: body }) => {
 };
 
 export async function save(url, { arg: { id, ...data } }) {
-  await axios({
+  const response = await axios({
     method: id ? 'PUT' : 'POST',
     url: `${baseUrl}/${url}/${id ?? ''}`,
     data,
   });
+  
+  return response.data.items || response.data;
 };
 
 export async function post(url, {arg}) {

@@ -20,22 +20,34 @@ export default function GrainSpawnForm({
 }) {
   const navigate = useNavigate();
 
-  const {values, handleBlur, handleSubmit, touched, errors, setFieldValue, getFieldProps, isSubmitting} = useFormik({
+  const {
+    values,
+    handleBlur,
+    handleSubmit,
+    touched,
+    errors,
+    setFieldValue,
+    getFieldProps,
+    isSubmitting,
+  } = useFormik({
     initialValues: {
       speciesId: grainSpawn?.speciesId || '',
       inoculationDate: formatDateForInput(grainSpawn?.inoculationDate),
       characteristic: grainSpawn?.characteristic || '',
       shaken: grainSpawn?.shaken ?? false,
 
-      sourceType: grainSpawn?.motherCultureId ? 
-        'motherCulture' : grainSpawn?.liquidCultureId ? 'liquidCulture' : '',
+      sourceType: grainSpawn?.motherCultureId
+        ? 'motherCulture'
+        : grainSpawn?.liquidCultureId
+          ? 'liquidCulture'
+          : '',
 
       motherCultureId: grainSpawn?.motherCultureId || '',
       liquidCultureId: grainSpawn?.liquidCultureId || '',
     },
     validationSchema: grainSpawnSchema,
     enableReinitialize: true,
-    
+
     onSubmit: async (values) => {
       try {
         const data = {
@@ -43,31 +55,47 @@ export default function GrainSpawnForm({
           inoculationDate: values.inoculationDate,
           characteristic: values.characteristic,
           shaken: values.shaken,
-          ...(values.sourceType === 'motherCulture' && { 
-            motherCultureId: values.motherCultureId, 
+          ...(values.sourceType === 'motherCulture' && {
+            motherCultureId: values.motherCultureId,
           }),
-          ...(values.sourceType === 'liquidCulture' && { 
-            liquidCultureId: values.liquidCultureId, 
+          ...(values.sourceType === 'liquidCulture' && {
+            liquidCultureId: values.liquidCultureId,
           }),
         };
 
         const payload = isEditing ? { id: grainSpawn.id, ...data } : data;
-        
-        await saveGrainSpawn(payload);
-        navigate('/grain-spawns');
+
+        // Save and get the result (which includes the ID for new records)
+        const savedGrainSpawn = await saveGrainSpawn(payload);
+
+        // Navigate to detail page
+        if (!isEditing && savedGrainSpawn?.id) {
+          // For new records: navigate with print prompt
+          navigate(`/grain-spawns/${savedGrainSpawn.id}`, {
+            state: { showPrintPrompt: true },
+          });
+        } else if (isEditing) {
+          // For edits: navigate without print prompt
+          navigate(`/grain-spawns/${grainSpawn.id}`);
+        } else {
+          // Fallback: navigate to list if something went wrong
+          navigate('/grain-spawns');
+        }
       } catch (err) {
         console.error('Failed to save grain spawn', err);
       }
     },
   });
 
-  const filteredMotherCultures = motherCultures?.filter(
-    (mc) => mc.speciesId === parseInt(values.speciesId),
-  ) || [];
-  
-  const filteredLiquidCultures = liquidCultures?.filter(
-    (lc) => lc.speciesId === parseInt(values.speciesId),
-  ) || [];
+  const filteredMotherCultures =
+    motherCultures?.filter(
+      (mc) => mc.speciesId === parseInt(values.speciesId),
+    ) || [];
+
+  const filteredLiquidCultures =
+    liquidCultures?.filter(
+      (lc) => lc.speciesId === parseInt(values.speciesId),
+    ) || [];
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -162,35 +190,39 @@ export default function GrainSpawnForm({
         error={errors.characteristic}
         disabled={isSubmitting}
       />
-      
-      <div className='flex justify-end gap-3 mt-8'>
-        <button 
-          type='button' 
+
+      <div className="flex justify-end gap-3 mt-8">
+        <button
+          type="button"
           onClick={() => navigate('/grain-spawns')}
-          className='px-6 py-3 rounded-xl font-semibold
+          className="px-6 py-3 rounded-xl font-semibold
           bg-white/50 dark:bg-gray-900/50 
           text-gray-700 dark:text-gray-300
           border-2 border-gray-200 dark:border-gray-700
           hover:border-gray-300 dark:hover:border-gray-600
           hover:bg-gray-50 dark:hover:bg-gray-800
           transform hover:scale-105 active:scale-95
-          transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+          transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isSubmitting}
         >
           Cancel
         </button>
-        <button 
-          type='submit' 
-          className='px-6 py-3 rounded-xl font-semibold
+        <button
+          type="submit"
+          className="px-6 py-3 rounded-xl font-semibold
           bg-linear-to-r from-teal-500 to-cyan-500 
           hover:from-teal-600 hover:to-cyan-600
           dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500
           text-white shadow-lg hover:shadow-xl
           transform hover:scale-105 active:scale-95
-          transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed'
+          transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Saving...' : (isEditing ? 'Update Grain Spawn' : 'Add Grain Spawn')}
+          {isSubmitting
+            ? 'Saving...'
+            : isEditing
+              ? 'Update Grain Spawn'
+              : 'Add Grain Spawn'}
         </button>
       </div>
     </form>
