@@ -45,9 +45,9 @@
   }
 }
 
-/* Print styles voor QR codes */
+/* Print styles for QR codes */
 @media print {
-  /* Verberg alles behalve de QR code */
+  /* Hide everything except the QR code area */
   body * {
     visibility: hidden;
   }
@@ -64,9 +64,21 @@
     transform: translate(-50%, -50%);
   }
 
-  /* Verberg buttons en modals tijdens print */
+  /* Ensure images print properly */
+  .qr-print-area img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    page-break-inside: avoid;
+  }
+
+  /* Hide buttons and modals during print */
   button,
   .fixed {
     display: none !important;
+  }
+
+  /* Force white background for QR code */
+  @page {
+    margin: 1cm;
   }
 }
