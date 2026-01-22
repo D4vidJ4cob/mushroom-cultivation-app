@@ -1,5 +1,4 @@
 import { useFormik } from 'formik';
-import { useNavigate } from 'react-router';
 import { grainSpawnSchema } from '../../schemas';
 import LabelSelect from '../LabelSelect';
 import LabelInput from '../LabelInput';
@@ -17,9 +16,8 @@ export default function GrainSpawnForm({
   liquidCultures,
   saveGrainSpawn,
   isEditing,
+  navigate,
 }) {
-  const navigate = useNavigate();
-
   const {
     values,
     handleBlur,
