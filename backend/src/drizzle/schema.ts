@@ -1,100 +1,127 @@
 import { relations } from 'drizzle-orm';
 import {
-  mysqlTable,
-  int,
-  varchar,
-  uniqueIndex,
-  date,
-  boolean,
-  mysqlEnum,
-  json,
-} from 'drizzle-orm/mysql-core';
+  pgTable, // ✅ CHANGED: mysqlTable → pgTable
+  serial, // ✅ CHANGED: int().autoincrement() → serial()
+  integer, // ✅ CHANGED: int() for foreign keys → integer()
+  varchar, // ✅ SAME: varchar stays the same
+  uniqueIndex, // ✅ SAME: uniqueIndex stays the same
+  date, // ✅ SAME: date stays the same
+  boolean, // ✅ SAME: boolean stays the same
+  pgEnum, // ✅ CHANGED: mysqlEnum → pgEnum
+  json, // ✅ SAME: json stays the same
+} from 'drizzle-orm/pg-core'; // ✅ CHANGED: mysql-core → pg-core
 
-export const users = mysqlTable(
+// ✅ CHANGED: PostgreSQL enums must be defined BEFORE tables
+// MySQL enums are inline, PostgreSQL requires separate definition
+export const roleEnum = pgEnum('role', ['manager', 'worker']);
+
+// ✅ CHANGED: mysqlTable → pgTable
+export const users = pgTable(
   'users',
   {
-    id: int('id', { unsigned: true }).primaryKey().autoincrement(),
+    // ✅ CHANGED: int().autoincrement() → serial()
+    // serial() = auto-incrementing integer in PostgreSQL
+    id: serial('id').primaryKey(),
+
+    // ✅ SAME: varchar, length, notNull all work the same
     name: varchar('name', { length: 255 }).notNull(),
     email: varchar('email', { length: 255 }).notNull(),
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
+
+    // ✅ SAME: json works the same in PostgreSQL
     roles: json('roles').notNull(),
   },
   (table) => [uniqueIndex('idx_user_email_unique').on(table.email)],
 );
 
-export const species = mysqlTable(
+export const species = pgTable(
   'species',
   {
-    id: int('id', { unsigned: true }).primaryKey().autoincrement(),
+    id: serial('id').primaryKey(),
     name: varchar('name', { length: 255 }).notNull(),
   },
   (table) => [uniqueIndex('idx_species_name_unique').on(table.name)],
 );
 
-export const motherCultures = mysqlTable('mother_cultures', {
-  id: int('id', { unsigned: true }).primaryKey().autoincrement(),
+export const motherCultures = pgTable('mother_cultures', {
+  id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   inoculationDate: date('inoculation_date').notNull(),
   characteristic: varchar('characteristic', { length: 255 }),
-  speciesId: int('species_id', { unsigned: true })
+
+  // ✅ CHANGED: int() → integer() for foreign keys
+  // In PostgreSQL: serial = primary key, integer = foreign key/regular int
+  speciesId: integer('species_id')
     .notNull()
     .references(() => species.id, { onDelete: 'restrict' }),
-  // qr-code implementeren
 });
 
-export const liquidCultures = mysqlTable('liquid_cultures', {
-  id: int('id', { unsigned: true }).primaryKey().autoincrement(),
+export const liquidCultures = pgTable('liquid_cultures', {
+  id: serial('id').primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   inoculationDate: date('inoculation_date').notNull(),
   characteristic: varchar('characteristic', { length: 255 }),
+
+  // ✅ SAME: boolean works the same
   contaminationStatus: boolean('contamination_status'),
-  speciesId: int('species_id', { unsigned: true })
+
+  speciesId: integer('species_id')
     .notNull()
     .references(() => species.id, { onDelete: 'restrict' }),
-  // qr-code implementeren
 });
 
-export const grainSpawns = mysqlTable('grain_spawns', {
-  id: int('id', { unsigned: true }).primaryKey().autoincrement(),
+export const grainSpawns = pgTable('grain_spawns', {
+  id: serial('id').primaryKey(),
   inoculationDate: date('inoculation_date').notNull(),
   characteristic: varchar('characteristic', { length: 255 }),
   contaminationStatus: boolean('contamination_status'),
   shaken: boolean('shaken'),
-  speciesId: int('species_id', { unsigned: true })
+
+  speciesId: integer('species_id')
     .notNull()
     .references(() => species.id, { onDelete: 'restrict' }),
-  motherCultureId: int('mother_culture_id', { unsigned: true }).references(
+
+  // ✅ CHANGED: int() → integer() for nullable foreign keys
+  motherCultureId: integer('mother_culture_id').references(
     () => motherCultures.id,
     { onDelete: 'restrict' },
   ),
-  liquidCultureId: int('liquid_culture_id', { unsigned: true }).references(
+
+  liquidCultureId: integer('liquid_culture_id').references(
     () => liquidCultures.id,
     { onDelete: 'restrict' },
   ),
-  // qr-code implementeren
 });
 
-export const substrates = mysqlTable('substrates', {
-  id: int('id', { unsigned: true }).primaryKey().autoincrement(),
+export const substrates = pgTable('substrates', {
+  id: serial('id').primaryKey(),
   inoculationDate: date('inoculation_date').notNull(),
   incubationDate: date('incubation_date'),
   contaminationStatus: boolean('contamination_status'),
-  grainSpawnId: int('grain_spawn_id', { unsigned: true })
+
+  grainSpawnId: integer('grain_spawn_id')
     .notNull()
     .references(() => grainSpawns.id, { onDelete: 'restrict' }),
-  // qr-code implementeren
 });
 
-export const batchAssignments = mysqlTable('batch_assignments', {
-  id: int('id', { unsigned: true }).primaryKey().autoincrement(),
-  userId: int('user_id', { unsigned: true })
+export const batchAssignments = pgTable('batch_assignments', {
+  id: serial('id').primaryKey(),
+
+  userId: integer('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-  substrateId: int('substrate_id', { unsigned: true })
+
+  substrateId: integer('substrate_id')
     .notNull()
     .references(() => substrates.id, { onDelete: 'cascade' }),
-  role: mysqlEnum('role', ['manager', 'worker']).default('worker').notNull(),
+
+  // ✅ CHANGED: mysqlEnum() → roleEnum (defined above)
+  // PostgreSQL enums must be defined separately, then used
+  role: roleEnum('role').default('worker').notNull(),
 });
+
+// ✅ SAME: All relations stay exactly the same!
+// Relations are ORM-level, not database-level, so no changes needed
 
 export const usersRelations = relations(users, ({ many }) => ({
   batchAssignments: many(batchAssignments),
@@ -156,7 +183,7 @@ export const batchAssignmentsRelations = relations(
   batchAssignments,
   ({ one }) => ({
     user: one(users, {
-      fields: [batchAssignments.id],
+      fields: [batchAssignments.userId],
       references: [users.id],
     }),
     substrate: one(substrates, {

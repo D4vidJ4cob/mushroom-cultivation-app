@@ -1,15 +1,15 @@
-import { drizzle } from 'drizzle-orm/mysql2';
-import * as mysql from 'mysql2/promise';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 import * as schema from './schema';
 import * as argon2 from 'argon2';
 import { Role } from '../auth/roles';
 
-const connection = mysql.createPool({
-  uri: process.env.DATABASE_url,
-  connectionLimit: 5,
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  max: 5, // Same as connectionLimit
 });
 
-const db = drizzle({ client: connection, schema, mode: 'default' });
+const db = drizzle({ client: pool, schema });
 
 async function hashPassword(password: string): Promise<string> {
   return argon2.hash(password, {
@@ -35,11 +35,13 @@ async function resetDatabase() {
 async function seedSpecies() {
   console.log('Seeding species');
 
-  await db.insert(schema.species).values([
-    { id: 1, name: 'Lions Mane' },
-    { id: 2, name: 'Blue Oyster' },
-    { id: 3, name: 'Chestnut' },
-  ]);
+  await db
+    .insert(schema.species)
+    .values([
+      { name: 'Lions Mane' },
+      { name: 'Blue Oyster' },
+      { name: 'Chestnut' },
+    ]);
   console.log('Seeding species successfull');
 }
 
@@ -48,21 +50,18 @@ async function seedUsers() {
 
   await db.insert(schema.users).values([
     {
-      id: 1,
       name: 'David Jacob',
       email: 'davidjacob.bjj@gmail.com',
       passwordHash: await hashPassword('12345678'),
       roles: [Role.ADMIN, Role.USER],
     },
     {
-      id: 2,
       name: 'Dries Hoste',
       email: 'drieshoste032@gmail.com',
       passwordHash: await hashPassword('12345678'),
       roles: [Role.ADMIN],
     },
     {
-      id: 3,
       name: 'Ivan Papoov',
       email: 'ivan@example.com',
       passwordHash: await hashPassword('12345678'),
@@ -78,24 +77,21 @@ async function seedMotherCultures() {
 
   await db.insert(schema.motherCultures).values([
     {
-      id: 1,
       speciesId: 1,
       name: 'Lions Mane',
-      inoculationDate: new Date('2025-01-15'),
+      inoculationDate: '2025-01-15',
       characteristic: '',
     },
     {
-      id: 2,
       speciesId: 2,
       name: 'Blue Oyster',
-      inoculationDate: new Date('2025-01-10'),
+      inoculationDate: '2025-01-10',
       characteristic: '',
     },
     {
-      id: 3,
       speciesId: 3,
       name: 'Chestnut',
-      inoculationDate: new Date('2025-01-12'),
+      inoculationDate: '2025-01-12',
       characteristic: 'Slow but steady, resistant to contamination',
     },
   ]);
@@ -108,26 +104,23 @@ async function seedLiquidCultures() {
 
   await db.insert(schema.liquidCultures).values([
     {
-      id: 1,
       name: 'Lions Mane',
       speciesId: 1,
-      inoculationDate: new Date('2025-01-20'),
+      inoculationDate: '2025-01-20',
       contaminationStatus: false,
       characteristic: '',
     },
     {
-      id: 2,
       name: 'Chestnut',
       speciesId: 2,
-      inoculationDate: new Date('2025-01-18'),
+      inoculationDate: '2025-01-18',
       contaminationStatus: false,
       characteristic: '',
     },
     {
-      id: 3,
       name: 'Blue Oyster',
       speciesId: 1,
-      inoculationDate: new Date('2025-01-22'),
+      inoculationDate: '2025-01-22',
       contaminationStatus: null,
       characteristic: '',
     },
@@ -141,8 +134,7 @@ async function seedGrainSpawns() {
 
   await db.insert(schema.grainSpawns).values([
     {
-      id: 1,
-      inoculationDate: new Date('2025-01-25'),
+      inoculationDate: '2025-01-25',
       contaminationStatus: false,
       shaken: true,
       speciesId: 1,
@@ -151,8 +143,7 @@ async function seedGrainSpawns() {
       characteristic: 'This grain has been soaked',
     },
     {
-      id: 2,
-      inoculationDate: new Date('2025-01-26'),
+      inoculationDate: '2025-01-26',
       contaminationStatus: false,
       shaken: false,
       speciesId: 1,
@@ -160,8 +151,7 @@ async function seedGrainSpawns() {
       liquidCultureId: 1,
     },
     {
-      id: 3,
-      inoculationDate: new Date('2025-01-27'),
+      inoculationDate: '2025-01-27',
       contaminationStatus: null,
       shaken: true,
       speciesId: 2,
@@ -179,31 +169,27 @@ async function seedSubstrates() {
 
   await db.insert(schema.substrates).values([
     {
-      id: 1,
       grainSpawnId: 1,
-      inoculationDate: new Date('2025-02-01'),
-      incubationDate: new Date('2025-02-15'),
+      inoculationDate: '2025-02-01',
+      incubationDate: '2025-02-15',
       contaminationStatus: false,
     },
     {
-      id: 2,
       grainSpawnId: 1,
-      inoculationDate: new Date('2025-02-01'),
-      incubationDate: new Date('2025-02-15'),
+      inoculationDate: '2025-02-01',
+      incubationDate: '2025-02-15',
       contaminationStatus: false,
     },
     {
-      id: 3,
       grainSpawnId: 2,
-      inoculationDate: new Date('2025-02-03'),
-      incubationDate: new Date('2025-02-17'),
+      inoculationDate: '2025-02-03',
+      incubationDate: '2025-02-17',
       contaminationStatus: null,
     },
     {
-      id: 4,
       grainSpawnId: 3,
-      inoculationDate: new Date('2025-02-05'),
-      incubationDate: new Date('2025-02-19'),
+      inoculationDate: '2025-02-05',
+      incubationDate: '2025-02-19',
       contaminationStatus: true,
     },
   ]);
@@ -215,11 +201,11 @@ async function seedBatchAssignments() {
   console.log('📋 Seeding batch assignments...');
 
   await db.insert(schema.batchAssignments).values([
-    { id: 1, userId: 1, substrateId: 1, role: 'manager' },
-    { id: 2, userId: 1, substrateId: 2, role: 'worker' },
-    { id: 3, userId: 2, substrateId: 2, role: 'manager' },
-    { id: 4, userId: 3, substrateId: 3, role: 'manager' },
-    { id: 5, userId: 3, substrateId: 4, role: 'manager' },
+    { userId: 1, substrateId: 1, role: 'manager' },
+    { userId: 1, substrateId: 2, role: 'worker' },
+    { userId: 2, substrateId: 2, role: 'manager' },
+    { userId: 3, substrateId: 3, role: 'manager' },
+    { userId: 3, substrateId: 4, role: 'manager' },
   ]);
 
   console.log('✅ Batch assignments seeded successfully\n');
@@ -240,10 +226,10 @@ async function main() {
 
 main()
   .then(async () => {
-    await connection.end();
+    await pool.end();
   })
   .catch(async (e) => {
     console.error(e);
-    await connection.end();
+    await pool.end();
     process.exit(1);
   });

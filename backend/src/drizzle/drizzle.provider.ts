@@ -1,6 +1,6 @@
 import { ConfigService } from '@nestjs/config';
-import { drizzle, MySql2Database } from 'drizzle-orm/mysql2';
-import * as mysql from 'mysql2/promise';
+import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
 import { DatabaseConfig, ServerConfig } from '../config/configuration';
 import { Inject } from '@nestjs/common';
 import * as schema from './schema';
@@ -14,12 +14,18 @@ export const drizzleProvider = [
 
     useFactory: (configService: ConfigService<ServerConfig>) => {
       const databaseConfig = configService.get<DatabaseConfig>('database')!;
+
+      const pool = new Pool({
+        connectionString: databaseConfig.url,
+        max: 5, // Connection pool size
+        ssl:
+          process.env.NODE_ENV === 'production'
+            ? { rejectUnauthorized: false }
+            : false,
+      });
+
       return drizzle({
-        client: mysql.createPool({
-          uri: databaseConfig.url,
-          connectionLimit: 5,
-        }),
-        mode: 'default',
+        client: pool,
         schema,
       });
     },
@@ -28,6 +34,6 @@ export const drizzleProvider = [
 
 export const InjectDrizzle = () => Inject(DrizzleAsyncProvider);
 
-export type DatabaseProvider = MySql2Database<typeof schema> & {
-  $client: mysql.Pool;
+export type DatabaseProvider = NodePgDatabase<typeof schema> & {
+  $client: Pool;
 };

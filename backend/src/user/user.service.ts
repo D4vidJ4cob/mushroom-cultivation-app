@@ -20,12 +20,16 @@ export class UserService {
   ) {}
 
   async getAll(): Promise<UserListResponseDto> {
-    const usersList = await this.db.query.users.findMany();
+    const usersList = await this.db.query.users.findMany({
+      orderBy: (users, { asc }) => [asc(users.name)],
+    });
+
     const items = usersList.map((user) =>
       plainToInstance(PublicUserResponseDto, user, {
         excludeExtraneousValues: true,
       }),
     );
+
     return { items };
   }
 
@@ -35,7 +39,7 @@ export class UserService {
     });
 
     if (!user) {
-      throw new NotFoundException('No user with this id exists');
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return plainToInstance(PublicUserResponseDto, user, {
@@ -44,10 +48,13 @@ export class UserService {
   }
 
   async deleteById(id: number): Promise<void> {
-    const [result] = await this.db.delete(users).where(eq(users.id, id));
+    const result = await this.db
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning();
 
-    if (result.affectedRows === 0) {
-      throw new NotFoundException('No user with this id exists');
+    if (result.length === 0) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
   }
 
@@ -55,13 +62,14 @@ export class UserService {
     id: number,
     changes: UpdateUserRequestDto,
   ): Promise<PublicUserResponseDto> {
-    const [result] = await this.db
+    const result = await this.db
       .update(users)
       .set(changes)
-      .where(eq(users.id, id));
+      .where(eq(users.id, id))
+      .returning();
 
-    if (result.affectedRows === 0) {
-      throw new NotFoundException('No user with this id exists');
+    if (result.length === 0) {
+      throw new NotFoundException(`User with ID ${id} not found`);
     }
 
     return this.getById(id);

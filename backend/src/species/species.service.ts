@@ -1,13 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import {
-    CreateSpeciesRequestDto,
-    SpeciesListResponseDto,
-    SpeciesResponseDto,
-    UpdateSpeciesRequestDto,
+  CreateSpeciesRequestDto,
+  SpeciesListResponseDto,
+  SpeciesResponseDto,
+  UpdateSpeciesRequestDto,
 } from './species.dto';
 import {
-    type DatabaseProvider,
-    InjectDrizzle,
+  type DatabaseProvider,
+  InjectDrizzle,
 } from '../drizzle/drizzle.provider';
 import { eq } from 'drizzle-orm';
 import { species } from '../drizzle/schema';
@@ -37,7 +37,7 @@ export class SpeciesService {
     const [newSpecies] = await this.db
       .insert(species)
       .values(createSpecies)
-      .$returningId();
+      .returning({ id: species.id });
     return this.getById(newSpecies.id);
   }
 
@@ -50,8 +50,11 @@ export class SpeciesService {
   }
 
   async deleteById(id: number): Promise<void> {
-    const [result] = await this.db.delete(species).where(eq(species.id, id));
-    if (result.affectedRows === 0) {
+    const result = await this.db
+      .delete(species)
+      .where(eq(species.id, id))
+      .returning();
+    if (result.length === 0) {
       throw new NotFoundException(`Species with ID ${id} not found.`);
     }
   }

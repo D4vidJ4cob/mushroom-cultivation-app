@@ -1,39 +1,37 @@
 {
-  "version": "5",
-  "dialect": "mysql",
-  "id": "1753505e-99c8-4914-9db5-22963ba971a0",
+  "id": "b3dd5485-1dbb-4cc0-a747-63361a0fe11d",
   "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
   "tables": {
-    "batch_assignments": {
+    "public.batch_assignments": {
       "name": "batch_assignments",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "user_id": {
           "name": "user_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "substrate_id": {
           "name": "substrate_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "role": {
           "name": "role",
-          "type": "enum('manager','worker')",
+          "type": "role",
+          "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
           "default": "'worker'"
         }
       },
@@ -66,75 +64,63 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "batch_assignments_id": {
-          "name": "batch_assignments_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "grain_spawns": {
+    "public.grain_spawns": {
       "name": "grain_spawns",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "inoculation_date": {
           "name": "inoculation_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "characteristic": {
           "name": "characteristic",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "contamination_status": {
           "name": "contamination_status",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "shaken": {
           "name": "shaken",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "species_id": {
           "name": "species_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "mother_culture_id": {
           "name": "mother_culture_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "liquid_culture_id": {
           "name": "liquid_culture_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         }
       },
       "indexes": {},
@@ -179,61 +165,51 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "grain_spawns_id": {
-          "name": "grain_spawns_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "liquid_cultures": {
+    "public.liquid_cultures": {
       "name": "liquid_cultures",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "inoculation_date": {
           "name": "inoculation_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "characteristic": {
           "name": "characteristic",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "contamination_status": {
           "name": "contamination_status",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "species_id": {
           "name": "species_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -252,54 +228,45 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "liquid_cultures_id": {
-          "name": "liquid_cultures_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "mother_cultures": {
+    "public.mother_cultures": {
       "name": "mother_cultures",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "inoculation_date": {
           "name": "inoculation_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "characteristic": {
           "name": "characteristic",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "species_id": {
           "name": "species_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -318,93 +285,86 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "mother_cultures_id": {
-          "name": "mother_cultures_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "species": {
+    "public.species": {
       "name": "species",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
         "idx_species_name_unique": {
           "name": "idx_species_name_unique",
           "columns": [
-            "name"
+            {
+              "expression": "name",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "species_id": {
-          "name": "species_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "substrates": {
+    "public.substrates": {
       "name": "substrates",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "inoculation_date": {
           "name": "inoculation_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "incubation_date": {
           "name": "incubation_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "contamination_status": {
           "name": "contamination_status",
           "type": "boolean",
           "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
+          "notNull": false
         },
         "grain_spawn_id": {
           "name": "grain_spawn_id",
-          "type": "int unsigned",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {},
@@ -423,86 +383,90 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "substrates_id": {
-          "name": "substrates_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
-    "users": {
+    "public.users": {
       "name": "users",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "int unsigned",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
         },
         "name": {
           "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "email": {
           "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "password_hash": {
           "name": "password_hash",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         },
         "roles": {
           "name": "roles",
           "type": "json",
           "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
+          "notNull": true
         }
       },
       "indexes": {
         "idx_user_email_unique": {
           "name": "idx_user_email_unique",
           "columns": [
-            "email"
+            {
+              "expression": "email",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
           ],
-          "isUnique": true
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
         }
       },
       "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "users_id": {
-          "name": "users_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
+      "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraint": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
+  "enums": {
+    "public.role": {
+      "name": "role",
+      "schema": "public",
+      "values": [
+        "manager",
+        "worker"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
   "views": {},
   "_meta": {
+    "columns": {},
     "schemas": {},
-    "tables": {},
-    "columns": {}
-  },
-  "internal": {
-    "tables": {},
-    "indexes": {}
+    "tables": {}
   }
 }

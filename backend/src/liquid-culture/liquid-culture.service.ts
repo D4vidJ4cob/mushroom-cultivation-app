@@ -23,29 +23,49 @@ export class LiquidCultureService {
   private validateAndParseDate(
     dateInput: string | Date,
     fieldName = 'date',
-  ): Date {
-    const date = new Date(dateInput);
+  ): string {
+    // parse if it's a string
+    const date =
+      typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+
     if (isNaN(date.getTime())) {
-      throw new BadRequestException(`Invalid ${fieldName}`);
+      throw new BadRequestException(
+        `Invalid ${fieldName}: must be a valid date format (YYYY-MM-DD or ISO string)`,
+      );
     }
-    return date;
+
+    // Return in YYYY-MM-DD formaat for database compatibility
+    return date.toISOString().split('T')[0];
   }
 
   async getAll(): Promise<LiquidCultureListResponseDto> {
     const items = await this.db.query.liquidCultures.findMany({
-      with: { species: true },
+      with: {
+        species: true,
+      },
+      orderBy: (liquidCultures, { desc }) => [
+        desc(liquidCultures.inoculationDate),
+      ],
     });
+
     return { items };
   }
 
   async getById(id: number): Promise<LiquidCultureDetailResponseDto> {
     const liquidCulture = await this.db.query.liquidCultures.findFirst({
       where: eq(liquidCultures.id, id),
-      with: { species: true, grainSpawns: true },
+      with: {
+        species: true,
+        grainSpawns: {
+          orderBy: (grainSpawns, { desc }) => [
+            desc(grainSpawns.inoculationDate),
+          ],
+        },
+      },
     });
 
     if (!liquidCulture) {
-      throw new NotFoundException(`Liquid Culture with ID ${id} not found.`);
+      throw new NotFoundException(`Liquid Culture with ID ${id} not found`);
     }
 
     return liquidCulture;
@@ -65,7 +85,7 @@ export class LiquidCultureService {
         ...createDto,
         inoculationDate,
       })
-      .$returningId();
+      .returning({ id: liquidCultures.id });
 
     return this.getById(newLiquidCulture.id);
   }
@@ -90,9 +110,10 @@ export class LiquidCultureService {
     const result = await this.db
       .update(liquidCultures)
       .set(updateFields)
-      .where(eq(liquidCultures.id, id));
+      .where(eq(liquidCultures.id, id))
+      .returning(); // returns array of deleted rows
 
-    if (result[0].affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Liquid Culture with ID ${id} not found.`);
     }
 
@@ -102,9 +123,10 @@ export class LiquidCultureService {
   async deleteById(id: number): Promise<void> {
     const result = await this.db
       .delete(liquidCultures)
-      .where(eq(liquidCultures.id, id));
+      .where(eq(liquidCultures.id, id))
+      .returning(); // returns array of deleted rows
 
-    if (result[0].affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Liquid Culture with ID ${id} not found.`);
     }
   }

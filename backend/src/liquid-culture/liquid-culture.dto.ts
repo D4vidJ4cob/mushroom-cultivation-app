@@ -44,7 +44,7 @@ export class LiquidCultureResponseDto {
     type: 'string',
     format: 'date-time',
   })
-  inoculationDate: Date;
+  inoculationDate: string;
 
   @ApiProperty({
     example: true,

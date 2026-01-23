@@ -7,10 +7,36 @@ services:
       dockerfile: Dockerfile
     environment:
       NODE_ENV: production
-      PORT: "3000"
-      CORS_ORIGINS: "[\"http://localhost:5173\", \"http://localhost\"]"
+      PORT: '3000'
+      CORS_ORIGINS: '["http://localhost:5173", "http://localhost:4173", "http://localhost"]'
       CORS_MAX_AGE: 10800
-      DATABASE_URL: mysql://devusr:devpwd@host.docker.internal:3308/cultivation
+      # PostgreSQL connection string
+      DATABASE_URL: postgresql://devusr:devpwd@host.docker.internal:5432/cultivationapp
       AUTH_JWT_SECRET: eensuperveiligsecretvoorindevelopment
     ports:
-      - "3000:3000"
+      - '3000:3000'
+    depends_on:
+      - db
+    # wait for database to be ready
+    restart: on-failure
+
+  db:
+    image: postgres:15
+    container_name: cultivation-postgres
+    ports:
+      - '5432:5432'
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: devusr
+      POSTGRES_PASSWORD: devpwd
+      POSTGRES_DB: cultivationapp
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U devusr -d cultivationapp']
+      timeout: 30s
+      interval: 30s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  db_data:

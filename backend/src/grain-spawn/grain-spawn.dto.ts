@@ -47,9 +47,9 @@ export class GrainSpawnResponseDto {
     example: '2025-01-25T00:00:00.000Z',
     description: 'Date when grain spawn was inoculated',
     type: 'string',
-    format: 'date-time',
+    format: 'date',
   })
-  inoculationDate: Date;
+  inoculationDate: string;
 
   @ApiProperty({
     example: false,

@@ -41,7 +41,7 @@ export class MotherCultureResponseDto {
     type: String,
     format: 'date-time',
   })
-  inoculationDate: Date;
+  inoculationDate: string;
 
   @ApiProperty({
     example: 1,

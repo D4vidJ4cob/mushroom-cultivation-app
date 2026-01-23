@@ -23,12 +23,18 @@ export class MotherCultureService {
   private validateAndParseDate(
     dateInput: string | Date,
     fieldName = 'date',
-  ): Date {
-    const date = new Date(dateInput);
+  ): string {
+    const date =
+      typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+
     if (isNaN(date.getTime())) {
-      throw new BadRequestException(`Invalid ${fieldName}`);
+      throw new BadRequestException(
+        `Invalid ${fieldName}: must be a valid date format (YYYY-MM-DD or ISO string)`,
+      );
     }
-    return date;
+
+    // Return in YYYY-MM-DD formaat for database compatibility
+    return date.toISOString().split('T')[0];
   }
 
   async getAll(): Promise<MotherCultureListResponseDto> {
@@ -36,6 +42,9 @@ export class MotherCultureService {
       with: {
         species: true,
       },
+      orderBy: (motherCultures, { desc }) => [
+        desc(motherCultures.inoculationDate),
+      ],
     });
     return { items };
   }
@@ -43,7 +52,14 @@ export class MotherCultureService {
   async getById(id: number): Promise<MotherCultureDetailResponseDto> {
     const motherCulture = await this.db.query.motherCultures.findFirst({
       where: eq(motherCultures.id, id),
-      with: { species: true, grainSpawns: true },
+      with: {
+        species: true,
+        grainSpawns: {
+          orderBy: (grainSpawns, { desc }) => [
+            desc(grainSpawns.inoculationDate),
+          ],
+        },
+      },
     });
 
     if (!motherCulture) {
@@ -67,7 +83,7 @@ export class MotherCultureService {
         ...createDto,
         inoculationDate,
       })
-      .$returningId();
+      .returning({ id: motherCultures.id });
 
     return this.getById(newMotherCulture.id);
   }
@@ -92,9 +108,10 @@ export class MotherCultureService {
     const result = await this.db
       .update(motherCultures)
       .set(updateFields)
-      .where(eq(motherCultures.id, id));
+      .where(eq(motherCultures.id, id))
+      .returning();
 
-    if (result[0].affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Mother Culture with ID ${id} not found.`);
     }
 
@@ -102,11 +119,12 @@ export class MotherCultureService {
   }
 
   async deleteById(id: number): Promise<void> {
-    const [result] = await this.db
+    const result = await this.db
       .delete(motherCultures)
-      .where(eq(motherCultures.id, id));
+      .where(eq(motherCultures.id, id))
+      .returning();
 
-    if (result.affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Mother Culture with ID ${id} not found.`);
     }
   }

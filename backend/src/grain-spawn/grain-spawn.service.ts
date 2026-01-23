@@ -23,22 +23,30 @@ export class GrainSpawnService {
   private validateAndParseDate(
     dateInput: string | Date,
     fieldName = 'date',
-  ): Date {
-    const date = new Date(dateInput);
+  ): string {
+    // Parse if it's a string
+    const date =
+      typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+
     if (isNaN(date.getTime())) {
-      throw new BadRequestException(`Invalid ${fieldName}`);
+      throw new BadRequestException(
+        `Invalid ${fieldName}: must be a valid date format (YYYY-MM-DD or ISO string)`,
+      );
     }
-    return date;
+
+    // Return in YYYY-MM-DD format for database compatibility
+    return date.toISOString().split('T')[0];
   }
 
   async getAll(): Promise<GrainSpawnsListResponseDto> {
     const items = await this.db.query.grainSpawns.findMany({
+      // TODO: mss werken met columns voor performantie?
       with: {
-        // TODO: mss werken met columns voor performantie?
         species: true,
         liquidCulture: true,
         motherCulture: true,
       },
+      orderBy: (grainSpawns, { desc }) => [desc(grainSpawns.inoculationDate)],
     });
     return { items };
   }
@@ -46,8 +54,11 @@ export class GrainSpawnService {
   async getById(id: number): Promise<GrainSpawnDetailResponseDto> {
     const grainSpawn = await this.db.query.grainSpawns.findFirst({
       where: eq(grainSpawns.id, id),
-
-      with: { species: true, liquidCulture: true, motherCulture: true },
+      with: {
+        species: true,
+        liquidCulture: true,
+        motherCulture: true,
+      },
     });
 
     if (!grainSpawn) {
@@ -71,7 +82,7 @@ export class GrainSpawnService {
         ...createDto,
         inoculationDate,
       })
-      .$returningId();
+      .returning({ id: grainSpawns.id });
 
     return this.getById(newGrainSpawn.id);
   }
@@ -96,9 +107,10 @@ export class GrainSpawnService {
     const result = await this.db
       .update(grainSpawns)
       .set(updateFields)
-      .where(eq(grainSpawns.id, id));
+      .where(eq(grainSpawns.id, id))
+      .returning();
 
-    if (result[0].affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Grain Spawn with ID ${id} not found.`);
     }
 
@@ -106,11 +118,12 @@ export class GrainSpawnService {
   }
 
   async deleteById(id: number): Promise<void> {
-    const [result] = await this.db
+    const result = await this.db
       .delete(grainSpawns)
-      .where(eq(grainSpawns.id, id));
+      .where(eq(grainSpawns.id, id))
+      .returning();
 
-    if (result.affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Grain Spawn with ID ${id} not found.`);
     }
   }

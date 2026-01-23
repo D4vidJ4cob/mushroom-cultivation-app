@@ -25,19 +25,23 @@ export class SubstrateService {
   private validateAndParseDate(
     dateInput: string | Date,
     fieldName = 'date',
-  ): Date {
-    const date = new Date(dateInput);
+  ): string {
+    // Parse if it's a string
+    const date =
+      typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+
     if (isNaN(date.getTime())) {
-      throw new BadRequestException(`Invalid ${fieldName}`);
+      throw new BadRequestException(
+        `Invalid ${fieldName}: must be a valid date format (YYYY-MM-DD or ISO string)`,
+      );
     }
-    return date;
+
+    // Return in YYYY-MM-DD format for database compatibility
+    return date.toISOString().split('T')[0];
   }
 
   async getAll(): Promise<SubstrateListResponseDto> {
     const items = await this.db.query.substrates.findMany({
-      // columns: {
-      //   grainSpawnId: false,
-      // },
       with: {
         grainSpawn: {
           columns: {
@@ -52,6 +56,7 @@ export class SubstrateService {
           },
         },
       },
+      orderBy: (substrates, { desc }) => [desc(substrates.inoculationDate)],
     });
 
     return { items };
@@ -60,7 +65,6 @@ export class SubstrateService {
   async getById(id: number): Promise<SubstrateDetailResponseDto> {
     const substrate = await this.db.query.substrates.findFirst({
       where: eq(substrates.id, id),
-
       with: {
         grainSpawn: {
           with: {
@@ -84,18 +88,19 @@ export class SubstrateService {
       createDto.inoculationDate,
       'inoculation date',
     );
+
     const incubationDate = createDto.incubationDate
       ? this.validateAndParseDate(createDto.incubationDate, 'incubation date')
-      : null;
+      : undefined;
 
     const [newSubstrate] = await this.db
       .insert(substrates)
       .values({
         ...createDto,
         inoculationDate,
-        incubationDate,
+        ...(incubationDate && { incubationDate }),
       })
-      .$returningId();
+      .returning({ id: substrates.id });
 
     return this.getById(newSubstrate.id);
   }
@@ -116,19 +121,25 @@ export class SubstrateService {
         'inoculation date',
       );
     }
+
     if (incubationDate !== undefined) {
-      updateFields.incubationDate = this.validateAndParseDate(
-        incubationDate,
-        'incubation date',
-      );
+      if (incubationDate === null) {
+        updateFields.incubationDate = null;
+      } else {
+        updateFields.incubationDate = this.validateAndParseDate(
+          incubationDate,
+          'incubation date',
+        );
+      }
     }
 
     const result = await this.db
       .update(substrates)
       .set(updateFields)
-      .where(eq(substrates.id, id));
+      .where(eq(substrates.id, id))
+      .returning();
 
-    if (result[0].affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Substrate with ID ${id} not found.`);
     }
 
@@ -136,11 +147,12 @@ export class SubstrateService {
   }
 
   async deleteById(id: number): Promise<void> {
-    const [result] = await this.db
+    const result = await this.db
       .delete(substrates)
-      .where(eq(substrates.id, id));
+      .where(eq(substrates.id, id))
+      .returning();
 
-    if (result.affectedRows === 0) {
+    if (result.length === 0) {
       throw new NotFoundException(`Substrate with ID ${id} not found.`);
     }
   }
@@ -163,7 +175,9 @@ export class SubstrateService {
           },
         },
       },
+      orderBy: (batchAssignments, { desc }) => [desc(batchAssignments.id)],
     });
+
     return { items: assignments };
   }
 }

@@ -86,7 +86,7 @@ export class AuthService {
     const [newUser] = await this.db
       .insert(users)
       .values({ name, email, passwordHash, roles: [Role.USER] })
-      .$returningId();
+      .returning({ id: users.id  });
 
     const user = await this.db.query.users.findFirst({
       where: eq(users.id, newUser.id),

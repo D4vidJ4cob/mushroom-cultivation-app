@@ -37,7 +37,7 @@ export class SubstrateResponseDto {
     type: 'string',
     format: 'date-time',
   })
-  inoculationDate: Date;
+  inoculationDate: string;
 
   @ApiProperty({
     example: '2025-02-15T00:00:00.000Z',
@@ -46,7 +46,7 @@ export class SubstrateResponseDto {
     type: 'string',
     format: 'date-time',
   })
-  incubationDate: Date | null;
+  incubationDate: string | null;
 
   @ApiProperty({
     example: false,
@@ -96,7 +96,7 @@ export class SubstrateAssignmentResponseDto {
   })
   substrate: {
     id: number;
-    inoculationDate: Date;
+    inoculationDate: string;
     contaminationStatus: boolean | null;
   };
 }

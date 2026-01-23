@@ -14,7 +14,8 @@ export class DrizzleQueryErrorFilter implements ExceptionFilter {
     } = error;
 
     switch (code) {
-      case 'ER_DUP_ENTRY':
+      // MySQL 'ER_DUP_ENTRY' → PostgreSQL '23505' (unique violation)
+      case '23505':
         if (message.includes('idx_species_name_unique')) {
           throw new ConflictException(
             'A species with this name already exists',
@@ -42,52 +43,60 @@ export class DrizzleQueryErrorFilter implements ExceptionFilter {
         } else {
           throw new ConflictException('This item already exists');
         }
-      case 'ER_NO_REFERENCED_ROW_2':
+
+      // MySQL 'ER_NO_REFERENCED_ROW_2' → PostgreSQL '23503' (foreign key violation)
+      case '23503':
         if (message.includes('species_id')) {
           throw new NotFoundException('No species with this id exists');
-        } else if (message.includes('grain_spawns_mother_culture_id')) {
+        } else if (message.includes('mother_culture_id')) {
           throw new NotFoundException('No mother culture with this id exists');
-        } else if (message.includes('grain_spawns_liquid_culture_id')) {
+        } else if (message.includes('liquid_culture_id')) {
           throw new NotFoundException('No liquid culture with this id exists');
-        } else if (message.includes('substrates_grain_spawn_id')) {
+        } else if (message.includes('grain_spawn_id')) {
           throw new NotFoundException('No grain spawn with this id exists');
-        } else if (message.includes('batch_assignments_user_id')) {
+        } else if (message.includes('user_id')) {
           throw new NotFoundException('No user with this id exists');
-        } else if (message.includes('batch_assignments_substrate_id')) {
+        } else if (message.includes('substrate_id')) {
           throw new NotFoundException('No substrate with this id exists');
         }
-        break;
 
-      case 'ER_ROW_IS_REFERENCED_2':
-        if (message.includes('species')) {
-          throw new ConflictException(
-            'Cannot delete species: it is still being used by cultures',
-          );
-        } else if (message.includes('mother_culture')) {
-          throw new ConflictException(
-            'Cannot delete mother culture: it is still being used by grain spawns',
-          );
-        } else if (message.includes('liquid_culture')) {
-          throw new ConflictException(
-            'Cannot delete liquid culture: it is still being used by grain spawns',
-          );
-        } else if (message.includes('grain_spawn')) {
-          throw new ConflictException(
-            'Cannot delete grain spawn: it is still being used by substrates',
-          );
-        } else if (message.includes('substrate')) {
-          throw new ConflictException(
-            'Cannot delete substrate: it still has assignments',
-          );
-        } else if (message.includes('user')) {
-          throw new ConflictException(
-            'Cannot delete user: they still have assignments',
-          );
-        } else {
-          throw new ConflictException(
-            'Cannot delete: this item is still being referenced',
-          );
+        // Also handle DELETE with foreign key constraint (same code in PostgreSQL)
+        // When trying to delete a record that is referenced by other records
+        if (
+          message.toLowerCase().includes('delete') ||
+          message.includes('still referenced')
+        ) {
+          if (message.includes('species')) {
+            throw new ConflictException(
+              'Cannot delete species: it is still being used by cultures',
+            );
+          } else if (message.includes('mother_culture')) {
+            throw new ConflictException(
+              'Cannot delete mother culture: it is still being used by grain spawns',
+            );
+          } else if (message.includes('liquid_culture')) {
+            throw new ConflictException(
+              'Cannot delete liquid culture: it is still being used by grain spawns',
+            );
+          } else if (message.includes('grain_spawn')) {
+            throw new ConflictException(
+              'Cannot delete grain spawn: it is still being used by substrates',
+            );
+          } else if (message.includes('substrate')) {
+            throw new ConflictException(
+              'Cannot delete substrate: it still has assignments',
+            );
+          } else if (message.includes('user')) {
+            throw new ConflictException(
+              'Cannot delete user: they still have assignments',
+            );
+          } else {
+            throw new ConflictException(
+              'Cannot delete: this item is still being referenced',
+            );
+          }
         }
+        break;
     }
 
     throw error;
