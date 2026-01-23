@@ -21,7 +21,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:seed": "env-cmd tsx src/drizzle/seed.ts",
-    "generate:api-client": "openapi-generator-cli generate -i http://localhost:3000/docs-json -g typescript-axios -o ../frontend/src/generated-api"
+    "generate:api-client": "openapi-generator-cli generate -i http://localhost:3000/docs-json -g typescript-axios -o ../frontend/src/generated-api",
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
