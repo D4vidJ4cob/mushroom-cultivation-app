@@ -6,7 +6,7 @@ import { Role } from '../auth/roles';
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  max: 5, // Same as connectionLimit
+  max: 5,
 });
 
 const db = drizzle({ client: pool, schema });
@@ -35,177 +35,212 @@ async function resetDatabase() {
 async function seedSpecies() {
   console.log('Seeding species');
 
-  await db
+  const seededSpecies = await db
     .insert(schema.species)
     .values([
       { name: 'Lions Mane' },
       { name: 'Blue Oyster' },
       { name: 'Chestnut' },
-    ]);
+    ])
+    .returning(); // ✅ Return de inserted records met IDs
+
   console.log('Seeding species successfull');
+  return seededSpecies;
 }
 
 async function seedUsers() {
   console.log('👥 Seeding users...');
 
-  await db.insert(schema.users).values([
-    {
-      name: 'David Jacob',
-      email: 'davidjacob.bjj@gmail.com',
-      passwordHash: await hashPassword('12345678'),
-      roles: [Role.ADMIN, Role.USER],
-    },
-    {
-      name: 'Dries Hoste',
-      email: 'drieshoste032@gmail.com',
-      passwordHash: await hashPassword('12345678'),
-      roles: [Role.ADMIN],
-    },
-    {
-      name: 'Ivan Papoov',
-      email: 'ivan@example.com',
-      passwordHash: await hashPassword('12345678'),
-      roles: [Role.USER],
-    },
-  ]);
+  const seededUsers = await db
+    .insert(schema.users)
+    .values([
+      {
+        name: 'David Jacob',
+        email: 'davidjacob.bjj@gmail.com',
+        passwordHash: await hashPassword('12345678'),
+        roles: [Role.ADMIN, Role.USER],
+      },
+      {
+        name: 'Dries Hoste',
+        email: 'drieshoste032@gmail.com',
+        passwordHash: await hashPassword('12345678'),
+        roles: [Role.ADMIN],
+      },
+      {
+        name: 'Ivan Papoov',
+        email: 'ivan@example.com',
+        passwordHash: await hashPassword('12345678'),
+        roles: [Role.USER],
+      },
+    ])
+    .returning();
 
   console.log('✅ Users seeded successfully\n');
+  return seededUsers;
 }
 
-async function seedMotherCultures() {
+async function seedMotherCultures(speciesIds: {
+  lionsId: number;
+  oystererId: number;
+  chestnutId: number;
+}) {
   console.log('🧫 Seeding mother cultures...');
 
-  await db.insert(schema.motherCultures).values([
-    {
-      speciesId: 1,
-      name: 'Lions Mane',
-      inoculationDate: '2025-01-15',
-      characteristic: '',
-    },
-    {
-      speciesId: 2,
-      name: 'Blue Oyster',
-      inoculationDate: '2025-01-10',
-      characteristic: '',
-    },
-    {
-      speciesId: 3,
-      name: 'Chestnut',
-      inoculationDate: '2025-01-12',
-      characteristic: 'Slow but steady, resistant to contamination',
-    },
-  ]);
+  const seededMotherCultures = await db
+    .insert(schema.motherCultures)
+    .values([
+      {
+        speciesId: speciesIds.lionsId,
+        name: 'Lions Mane MC',
+        inoculationDate: '2025-01-15',
+        characteristic: '',
+      },
+      {
+        speciesId: speciesIds.oystererId,
+        name: 'Blue Oyster MC',
+        inoculationDate: '2025-01-10',
+        characteristic: '',
+      },
+      {
+        speciesId: speciesIds.chestnutId,
+        name: 'Chestnut MC',
+        inoculationDate: '2025-01-12',
+        characteristic: 'Slow but steady, resistant to contamination',
+      },
+    ])
+    .returning();
 
   console.log('✅ Mother cultures seeded successfully\n');
+  return seededMotherCultures;
 }
 
-async function seedLiquidCultures() {
+async function seedLiquidCultures(speciesIds: {
+  lionsId: number;
+  oystererId: number;
+  chestnutId: number;
+}) {
   console.log('🧪 Seeding liquid cultures...');
 
-  await db.insert(schema.liquidCultures).values([
-    {
-      name: 'Lions Mane',
-      speciesId: 1,
-      inoculationDate: '2025-01-20',
-      contaminationStatus: false,
-      characteristic: '',
-    },
-    {
-      name: 'Chestnut',
-      speciesId: 2,
-      inoculationDate: '2025-01-18',
-      contaminationStatus: false,
-      characteristic: '',
-    },
-    {
-      name: 'Blue Oyster',
-      speciesId: 1,
-      inoculationDate: '2025-01-22',
-      contaminationStatus: null,
-      characteristic: '',
-    },
-  ]);
+  const seededLiquidCultures = await db
+    .insert(schema.liquidCultures)
+    .values([
+      {
+        name: 'Lions Mane LC',
+        speciesId: speciesIds.lionsId,
+        inoculationDate: '2025-01-20',
+        contaminationStatus: false,
+        characteristic: '',
+      },
+      {
+        name: 'Chestnut LC',
+        speciesId: speciesIds.chestnutId,
+        inoculationDate: '2025-01-18',
+        contaminationStatus: false,
+        characteristic: '',
+      },
+      {
+        name: 'Blue Oyster LC',
+        speciesId: speciesIds.oystererId,
+        inoculationDate: '2025-01-22',
+        contaminationStatus: null,
+        characteristic: '',
+      },
+    ])
+    .returning();
 
   console.log('✅ Liquid cultures seeded successfully\n');
+  return seededLiquidCultures;
 }
 
-async function seedGrainSpawns() {
+async function seedGrainSpawns(
+  speciesIds: { lionsId: number; oystererId: number },
+  motherCultureIds: number[],
+  liquidCultureIds: number[],
+) {
   console.log('🌾 Seeding grain spawns...');
 
-  await db.insert(schema.grainSpawns).values([
-    {
-      inoculationDate: '2025-01-25',
-      contaminationStatus: false,
-      shaken: true,
-      speciesId: 1,
-      motherCultureId: 1,
-      liquidCultureId: null,
-      characteristic: 'This grain has been soaked',
-    },
-    {
-      inoculationDate: '2025-01-26',
-      contaminationStatus: false,
-      shaken: false,
-      speciesId: 1,
-      motherCultureId: null,
-      liquidCultureId: 1,
-    },
-    {
-      inoculationDate: '2025-01-27',
-      contaminationStatus: null,
-      shaken: true,
-      speciesId: 2,
-      motherCultureId: null,
-      liquidCultureId: 2,
-      characteristic: 'This grain has been soaked and boiled',
-    },
-  ]);
+  const seededGrainSpawns = await db
+    .insert(schema.grainSpawns)
+    .values([
+      {
+        inoculationDate: '2025-01-25',
+        contaminationStatus: false,
+        shaken: true,
+        speciesId: speciesIds.lionsId,
+        motherCultureId: motherCultureIds[0],
+        liquidCultureId: null,
+        characteristic: 'This grain has been soaked',
+      },
+      {
+        inoculationDate: '2025-01-26',
+        contaminationStatus: false,
+        shaken: false,
+        speciesId: speciesIds.lionsId,
+        motherCultureId: null,
+        liquidCultureId: liquidCultureIds[0],
+      },
+      {
+        inoculationDate: '2025-01-27',
+        contaminationStatus: null,
+        shaken: true,
+        speciesId: speciesIds.oystererId,
+        motherCultureId: null,
+        liquidCultureId: liquidCultureIds[1],
+        characteristic: 'This grain has been soaked and boiled',
+      },
+    ])
+    .returning();
 
   console.log('✅ Grain spawns seeded successfully\n');
+  return seededGrainSpawns;
 }
 
-async function seedSubstrates() {
+async function seedSubstrates(grainSpawnIds: number[]) {
   console.log('🍄 Seeding substrates...');
 
-  await db.insert(schema.substrates).values([
-    {
-      grainSpawnId: 1,
-      inoculationDate: '2025-02-01',
-      incubationDate: '2025-02-15',
-      contaminationStatus: false,
-    },
-    {
-      grainSpawnId: 1,
-      inoculationDate: '2025-02-01',
-      incubationDate: '2025-02-15',
-      contaminationStatus: false,
-    },
-    {
-      grainSpawnId: 2,
-      inoculationDate: '2025-02-03',
-      incubationDate: '2025-02-17',
-      contaminationStatus: null,
-    },
-    {
-      grainSpawnId: 3,
-      inoculationDate: '2025-02-05',
-      incubationDate: '2025-02-19',
-      contaminationStatus: true,
-    },
-  ]);
+  const seededSubstrates = await db
+    .insert(schema.substrates)
+    .values([
+      {
+        grainSpawnId: grainSpawnIds[0],
+        inoculationDate: '2025-02-01',
+        incubationDate: '2025-02-15',
+        contaminationStatus: false,
+      },
+      {
+        grainSpawnId: grainSpawnIds[0],
+        inoculationDate: '2025-02-01',
+        incubationDate: '2025-02-15',
+        contaminationStatus: false,
+      },
+      {
+        grainSpawnId: grainSpawnIds[1],
+        inoculationDate: '2025-02-03',
+        incubationDate: '2025-02-17',
+        contaminationStatus: null,
+      },
+      {
+        grainSpawnId: grainSpawnIds[2],
+        inoculationDate: '2025-02-05',
+        incubationDate: '2025-02-19',
+        contaminationStatus: true,
+      },
+    ])
+    .returning();
 
   console.log('✅ Substrates seeded successfully\n');
+  return seededSubstrates;
 }
 
-async function seedBatchAssignments() {
+async function seedBatchAssignments(userIds: number[], substrateIds: number[]) {
   console.log('📋 Seeding batch assignments...');
 
   await db.insert(schema.batchAssignments).values([
-    { userId: 1, substrateId: 1, role: 'manager' },
-    { userId: 1, substrateId: 2, role: 'worker' },
-    { userId: 2, substrateId: 2, role: 'manager' },
-    { userId: 3, substrateId: 3, role: 'manager' },
-    { userId: 3, substrateId: 4, role: 'manager' },
+    { userId: userIds[0], substrateId: substrateIds[0], role: 'manager' },
+    { userId: userIds[0], substrateId: substrateIds[1], role: 'worker' },
+    { userId: userIds[1], substrateId: substrateIds[1], role: 'manager' },
+    { userId: userIds[2], substrateId: substrateIds[2], role: 'manager' },
+    { userId: userIds[2], substrateId: substrateIds[3], role: 'manager' },
   ]);
 
   console.log('✅ Batch assignments seeded successfully\n');
@@ -214,14 +249,31 @@ async function seedBatchAssignments() {
 async function main() {
   console.log('starting db seeding');
   await resetDatabase();
-  await seedSpecies();
-  await seedUsers();
-  await seedMotherCultures();
-  await seedLiquidCultures();
-  await seedGrainSpawns();
-  await seedSubstrates();
-  await seedBatchAssignments();
-  console.log('seeding completed');
+
+  // Seed in order and capture IDs
+  const species = await seedSpecies();
+  const users = await seedUsers();
+
+  const speciesIds = {
+    lionsId: species[0].id,
+    oystererId: species[1].id,
+    chestnutId: species[2].id,
+  };
+
+  const motherCultures = await seedMotherCultures(speciesIds);
+  const liquidCultures = await seedLiquidCultures(speciesIds);
+  const grainSpawns = await seedGrainSpawns(
+    speciesIds,
+    motherCultures.map((mc) => mc.id),
+    liquidCultures.map((lc) => lc.id),
+  );
+  const substrates = await seedSubstrates(grainSpawns.map((gs) => gs.id));
+  await seedBatchAssignments(
+    users.map((u) => u.id),
+    substrates.map((s) => s.id),
+  );
+
+  console.log('seeding completed ✅');
 }
 
 main()
