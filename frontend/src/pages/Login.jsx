@@ -10,15 +10,22 @@ export default function Login() {
   const { search } = useLocation();
   const { login } = useAuth();
 
-  const { handleSubmit, touched, errors, getFieldProps, isSubmitting, resetForm } = useFormik({
+  const {
+    handleSubmit,
+    touched,
+    errors,
+    getFieldProps,
+    isSubmitting,
+    resetForm,
+  } = useFormik({
     initialValues: {
-      email: 'davidjacob.bjj@gmail.com',
-      password: '12345678',
+      email: '',
+      password: '',
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
       const success = await login(values.email, values.password);
-      
+
       if (success) {
         const params = new URLSearchParams(search);
         navigate(params.get('redirect') || '/', { replace: true });
@@ -35,8 +42,10 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-md bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">Login</h2>
-        
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900 dark:text-white">
+          Login
+        </h2>
+
         <form onSubmit={handleSubmit}>
           <LabelInput
             label="Email"

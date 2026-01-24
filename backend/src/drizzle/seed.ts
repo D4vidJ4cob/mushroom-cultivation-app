@@ -248,6 +248,17 @@ async function seedBatchAssignments(userIds: number[], substrateIds: number[]) {
 
 async function main() {
   console.log('starting db seeding');
+  console.log(
+    '🔗 Connecting to:',
+    process.env.DATABASE_URL?.substring(0, 30) + '...',
+  ); // Check connection string
+
+  // Test connection
+  const testQuery = await db.execute('SELECT NOW()');
+  console.log('✅ Database connected at:', testQuery.rows[0]);
+
+  await resetDatabase();
+  console.log('starting db seeding');
   await resetDatabase();
 
   // Seed in order and capture IDs
