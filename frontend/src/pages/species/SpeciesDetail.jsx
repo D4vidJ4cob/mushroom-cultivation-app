@@ -105,8 +105,9 @@ const SpeciesDetail = () => {
         {/* Print modal (outside AsyncData but inside container) */}
         {showPrintModal && (
           <QRPrintModal
-            data={qrData}
-            title={species?.name || `Species #${id}`}
+            data={`species:${id}`}
+            title={species?.name}
+            date={null} // species has no date
             onClose={() => setShowPrintModal(false)}
             onPrint={() => setShowPrintModal(false)}
           />

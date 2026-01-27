@@ -29,129 +29,141 @@ import SpeciesDetail from './pages/species/SpeciesDetail.jsx';
 
 export const ThemeContext = createContext();
 const router = createBrowserRouter([
-  { Component: Layout , children: [
-    { 
-      path: '/', 
-      Component: Home, 
-    },
-    { 
-      path: '/login', 
-      Component: Login, 
-    },
-    {
-      path: '/logout',
-      Component: Logout,
-    },
-    { path: 'species', 
-      Component: PrivateRoute,
-      children: [
-        {
-          index: true,
-          Component: SpeciesList,
-        },
-        {
-          path: ':id',
-          Component: SpeciesDetail,
-        },
-        {
-          path: 'add',
-          Component: AddOrEditSpecies,
-        },
-        {
-          path: 'edit/:id',
-          Component: AddOrEditSpecies,
-        },
-      ] },
-    { path: 'mother-cultures',
-      Component: PrivateRoute,
-      children:[
-        { 
-          index: true, 
-          Component: MotherCulturesList,
-        },
-        { 
-          path: ':id', 
-          Component: MotherCultureDetail,
-        },
-        {
-          path: 'add',
-          Component: AddOrEditMotherCulture,
-        },
-        {
-          path: 'edit/:id',
-          Component: AddOrEditMotherCulture,
-        },
-      ] },
-    { path: 'liquid-cultures',
-      Component: PrivateRoute,
-      children: [
-        {
-          index: true,
-          Component: LiquidCulturesList,
-        },
-        { 
-          path: ':id', 
-          Component: LiquidCultureDetail,
-        },
-        {
-          path: 'add',
-          Component: AddOrEditLiquidCulture,
-        },
-        {
-          path: 'edit/:id',
-          Component: AddOrEditLiquidCulture,
-        },
-      ] },
-    { path: 'grain-spawns',
-      Component: PrivateRoute,
-      children: [
-        {
-          index: true,
-          Component: GrainSpawnsList,
-        },
-        { 
-          path: ':id', 
-          Component: GrainSpawnDetail,
-        },
-        {
-          path: 'add',
-          Component: AddOrEditGrainSpawn,
-        },
-        {
-          path: 'edit/:id',
-          Component: AddOrEditGrainSpawn,
-        },
-
-      ] },
-    { path: 'substrates',
-      Component: PrivateRoute,
-      children: [
-        {
-          index: true,
-          Component: SubstratesList,
-        },
-        { 
-          path: ':id', 
-          Component: SubstrateDetail,
-        },
-        {
-          path: 'add',
-          Component: AddOrEditSubstrate,
-        },
-        {
-          path: 'edit/:id',
-          Component: AddOrEditSubstrate,
-        },
-      ] },
-    // TODO: other paths
-    { path:'*', Component: NotFound },
-  ]}]);
+  {
+    Component: Layout,
+    children: [
+      {
+        path: '/',
+        Component: Home,
+      },
+      {
+        path: '/login',
+        Component: Login,
+      },
+      {
+        path: '/logout',
+        Component: Logout,
+      },
+      {
+        path: 'species',
+        Component: PrivateRoute,
+        children: [
+          {
+            index: true,
+            Component: SpeciesList,
+          },
+          {
+            path: ':id',
+            Component: SpeciesDetail,
+          },
+          {
+            path: 'add',
+            Component: AddOrEditSpecies,
+          },
+          {
+            path: 'edit/:id',
+            Component: AddOrEditSpecies,
+          },
+        ],
+      },
+      {
+        path: 'mother-cultures',
+        Component: PrivateRoute,
+        children: [
+          {
+            index: true,
+            Component: MotherCulturesList,
+          },
+          {
+            path: ':id',
+            Component: MotherCultureDetail,
+          },
+          {
+            path: 'add',
+            Component: AddOrEditMotherCulture,
+          },
+          {
+            path: 'edit/:id',
+            Component: AddOrEditMotherCulture,
+          },
+        ],
+      },
+      {
+        path: 'liquid-cultures',
+        Component: PrivateRoute,
+        children: [
+          {
+            index: true,
+            Component: LiquidCulturesList,
+          },
+          {
+            path: ':id',
+            Component: LiquidCultureDetail,
+          },
+          {
+            path: 'add',
+            Component: AddOrEditLiquidCulture,
+          },
+          {
+            path: 'edit/:id',
+            Component: AddOrEditLiquidCulture,
+          },
+        ],
+      },
+      {
+        path: 'grain-spawns',
+        Component: PrivateRoute,
+        children: [
+          {
+            index: true,
+            Component: GrainSpawnsList,
+          },
+          {
+            path: ':id',
+            Component: GrainSpawnDetail,
+          },
+          {
+            path: 'add',
+            Component: AddOrEditGrainSpawn,
+          },
+          {
+            path: 'edit/:id',
+            Component: AddOrEditGrainSpawn,
+          },
+        ],
+      },
+      {
+        path: 'substrates',
+        Component: PrivateRoute,
+        children: [
+          {
+            index: true,
+            Component: SubstratesList,
+          },
+          {
+            path: ':id',
+            Component: SubstrateDetail,
+          },
+          {
+            path: 'add',
+            Component: AddOrEditSubstrate,
+          },
+          {
+            path: 'edit/:id',
+            Component: AddOrEditSubstrate,
+          },
+        ],
+      },
+      { path: '*', Component: NotFound },
+    ],
+  },
+]);
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
       <ThemeProvider>
-        < RouterProvider router = {router} />
+        <RouterProvider router={router} />
       </ThemeProvider>
     </AuthProvider>
   </StrictMode>,

@@ -60,7 +60,7 @@ export class DrizzleQueryErrorFilter implements ExceptionFilter {
           throw new NotFoundException('No substrate with this id exists');
         }
 
-        // Also handle DELETE with foreign key constraint (same code in PostgreSQL)
+        // Also handle DELETE with foreign key constraint
         // When trying to delete a record that is referenced by other records
         if (
           message.toLowerCase().includes('delete') ||

@@ -184,8 +184,9 @@ const MotherCultureDetail = () => {
         {/* Print Modal */}
         {showPrintModal && (
           <QRPrintModal
-            data={qrData}
-            title={motherCulture?.name || `Mother Culture #${id}`}
+            data={`motherculture:${id}`}
+            title={motherCulture?.species?.name || motherCulture?.name}
+            date={`Inoculated: ${new Date(motherCulture?.inoculationDate).toLocaleDateString('nl-BE')}`}
             onClose={() => setShowPrintModal(false)}
             onPrint={() => setShowPrintModal(false)}
           />

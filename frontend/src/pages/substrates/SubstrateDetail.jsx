@@ -265,8 +265,13 @@ const SubstrateDetail = () => {
         {/* Print Modal */}
         {showPrintModal && (
           <QRPrintModal
-            data={qrData}
-            title={`Substrate #${id}`}
+            data={`substrate:${id}`}
+            title={substrate?.grainSpawn?.species?.name || 'Unknown Species'}
+            date={
+              substrate?.incubationDate
+                ? `Incubated: ${new Date(substrate.incubationDate).toLocaleDateString('nl-BE')}`
+                : `Inoculated: ${new Date(substrate.inoculationDate).toLocaleDateString('nl-BE')}`
+            }
             onClose={() => setShowPrintModal(false)}
             onPrint={() => setShowPrintModal(false)}
           />

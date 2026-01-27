@@ -288,8 +288,9 @@ const GrainSpawnDetail = () => {
         {/* Print modal (outside AsyncData but inside container) */}
         {showPrintModal && (
           <QRPrintModal
-            data={qrData}
-            title={grainSpawn?.species?.name || `Grain Spawn #${id}`}
+            data={`grainspawn:${id}`}
+            title={grainSpawn?.species?.name || 'Unknown Species'}
+            date={`Inoculated: ${new Date(grainSpawn?.inoculationDate).toLocaleDateString('nl-BE')}`}
             onClose={() => setShowPrintModal(false)}
             onPrint={() => setShowPrintModal(false)}
           />

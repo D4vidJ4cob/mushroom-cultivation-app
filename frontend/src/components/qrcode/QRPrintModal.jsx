@@ -1,122 +1,167 @@
-import QRCodeDisplay from './QRCodeDisplay';
+import { useEffect, useRef } from 'react';
+import QRCode from 'qrcode';
 
-export default function QRPrintModal({ data, title, onClose, onPrint }) {
-  const handleDownloadPNG = () => {
-    const canvas = document.createElement('canvas');
+/**
+ * QRPrintModal - Compact design voor Brother QL-810W
+ *
+ * Layout:
+ * - Species naam (48px, bold)
+ * - QR Code (45×45mm = 500×500px)
+ * - Datum (32px)
+ *
+ * Total: 62mm breed × ~60mm hoog
+ */
+export default function QRPrintModal({ data, title, date, onClose, onPrint }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
 
-    // Brother QL-700 uses 62mm wide labels
-    // Optimal size: 696px width (62mm at 285dpi)
-    // Height flexible based on label type (we use 29mm = 326px)
+    // Canvas size: 62mm breed × 60mm hoog
+    // @ 300 DPI: 696×700 pixels
     canvas.width = 696;
-    canvas.height = 696; // Square for 62mm x 62mm label (or use 326 for 62mm x 29mm)
+    canvas.height = 700;
 
     // White background
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Get the QR image
-    const qrImg = document.querySelector('.qr-print-area img');
-    if (qrImg) {
-      // Draw title at top
-      ctx.fillStyle = '#000000';
-      ctx.font = 'bold 28px Arial';
-      ctx.textAlign = 'center';
+    ctx.fillStyle = 'black';
+    ctx.textAlign = 'center';
 
-      // Wrap title if too long
-      const maxWidth = canvas.width - 40;
-      const words = title.split(' ');
-      let line = '';
-      let y = 50;
+    let currentY = 55; // Start position
 
-      for (let word of words) {
-        const testLine = line + word + ' ';
-        const metrics = ctx.measureText(testLine);
-        if (metrics.width > maxWidth && line !== '') {
-          ctx.fillText(line, canvas.width / 2, y);
-          line = word + ' ';
-          y += 35;
-        } else {
-          line = testLine;
-        }
+    // ========================================
+    // SPECIES NAME / TITLE
+    // ========================================
+    ctx.font = 'bold 48px Arial';
+
+    // Text wrapping voor lange namen
+    const maxWidth = canvas.width - 40;
+    const titleLines = wrapText(ctx, title, maxWidth);
+
+    titleLines.forEach((line) => {
+      ctx.fillText(line, canvas.width / 2, currentY);
+      currentY += 55; // Line height
+    });
+
+    currentY += 20; // Gap between title and QR
+
+    // ========================================
+    // QR CODE (45×45mm = 500×500px)
+    // ========================================
+    const qrSize = 500;
+    const qrX = (canvas.width - qrSize) / 2;
+
+    QRCode.toDataURL(data, {
+      width: qrSize,
+      margin: 1,
+      errorCorrectionLevel: 'M',
+    })
+      .then((url) => {
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, qrX, currentY, qrSize, qrSize);
+
+          currentY += qrSize + 25; // Move below QR code
+
+          // ========================================
+          // DATE
+          // ========================================
+          if (date) {
+            ctx.font = 'bold 32px Arial';
+            ctx.fillText(date, canvas.width / 2, currentY);
+          }
+        };
+        img.src = url;
+      })
+      .catch((err) => console.error('QR generation failed:', err));
+  }, [data, title, date]);
+
+  /**
+   * Wrap text to fit within maxWidth
+   */
+  function wrapText(ctx, text, maxWidth) {
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    words.forEach((word) => {
+      const testLine = currentLine + word + ' ';
+      const metrics = ctx.measureText(testLine);
+
+      if (metrics.width > maxWidth && currentLine !== '') {
+        lines.push(currentLine.trim());
+        currentLine = word + ' ';
+      } else {
+        currentLine = testLine;
       }
-      ctx.fillText(line, canvas.width / 2, y);
+    });
 
-      // Draw QR code (centered, optimized size for scanning)
-      const qrSize = 450;
-      const x = (canvas.width - qrSize) / 2;
-      const qrY = y + 30;
-      ctx.drawImage(qrImg, x, qrY, qrSize, qrSize);
-
-      // Draw data text below QR (smaller, readable)
-      ctx.font = '18px monospace';
-      ctx.fillText(data, canvas.width / 2, qrY + qrSize + 35);
-
-      // Download as PNG
-      const link = document.createElement('a');
-      const filename = `qr-${data.replace(':', '-')}.png`;
-      link.download = filename;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-
-      console.log(`✅ QR code saved as: ${filename}`);
+    if (currentLine) {
+      lines.push(currentLine.trim());
     }
 
+    return lines;
+  }
+
+  const handleDownload = () => {
+    const canvas = canvasRef.current;
+    const url = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.download = `qr-${data.replace(':', '-')}.png`;
+    link.href = url;
+    link.click();
     onPrint();
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl max-w-sm w-full">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            QR Code Opslaan
-          </h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 text-2xl leading-none"
-            aria-label="Sluiten"
-          >
-            ✕
-          </button>
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+        <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+          QR Code Label
+        </h3>
+
+        {/* Preview */}
+        <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg mb-4">
+          <canvas ref={canvasRef} className="w-full h-auto" />
         </div>
 
-        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-          Sla de QR code op voor <span className="font-semibold">{title}</span>
-        </p>
+        {/* Download Button */}
+        <button
+          onClick={handleDownload}
+          className="w-full px-4 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 
+          hover:from-teal-600 hover:to-cyan-600 text-white rounded-lg font-semibold mb-3 shadow-lg"
+        >
+          💾 Download QR Label
+        </button>
 
-        <div className="qr-print-area mb-6 bg-white p-4 rounded-lg border-2 border-gray-200">
-          <QRCodeDisplay data={data} size={200} />
+        {/* Instructions */}
+        <div className="mb-4 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg text-sm">
+          <p className="text-gray-700 dark:text-gray-300 mb-2 font-semibold">
+            🖨️ Printen:
+          </p>
+          <ol className="text-gray-600 dark:text-gray-400 space-y-1 text-xs ml-4 list-decimal">
+            <li>Download PNG</li>
+            <li>Open Brother iPrint&Label app</li>
+            <li>Print op 62mm label (DK-22205)</li>
+          </ol>
+          <p className="text-gray-500 dark:text-gray-500 text-xs mt-2">
+            📏 Label: 62×60mm | QR: 45×45mm
+          </p>
         </div>
 
-        <div className="space-y-3">
-          <button
-            onClick={handleDownloadPNG}
-            className="w-full px-6 py-4 rounded-xl font-semibold text-lg
-            bg-linear-to-r from-teal-500 to-cyan-500 
-            hover:from-teal-600 hover:to-cyan-600
-            active:from-teal-700 active:to-cyan-700
-            text-white shadow-md
-            transform active:scale-95
-            transition-all duration-200"
-          >
-            💾 Download QR Label
-          </button>
-
-          <button
-            onClick={onClose}
-            className="w-full px-6 py-4 rounded-xl font-semibold text-lg
-            bg-gray-200 dark:bg-gray-700
-            hover:bg-gray-300 dark:hover:bg-gray-600
-            active:bg-gray-400 dark:active:bg-gray-500
-            text-gray-700 dark:text-gray-300
-            shadow-md
-            transform active:scale-95
-            transition-all duration-200"
-          >
-            Later
-          </button>
-        </div>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 
+          dark:text-gray-300 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600"
+        >
+          Sluiten
+        </button>
       </div>
     </div>
   );
