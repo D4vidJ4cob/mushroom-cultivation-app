@@ -94,7 +94,7 @@ const SpeciesDetail = () => {
                   </div>
 
                   <p className="text-center text-gray-600 dark:text-gray-400 mt-4">
-                    + Scan this QR code to quickly return to this species
+                    Scan this QR code to quickly return to this species
                   </p>
                 </div>
               </div>
@@ -103,7 +103,7 @@ const SpeciesDetail = () => {
         </div>
 
         {/* Print modal (outside AsyncData but inside container) */}
-        {showPrintModal && (
+        {showPrintModal && species && (
           <QRPrintModal
             data={`species:${id}`}
             title={species?.name}

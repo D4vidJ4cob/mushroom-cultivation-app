@@ -182,7 +182,7 @@ const MotherCultureDetail = () => {
         </div>
 
         {/* Print Modal */}
-        {showPrintModal && (
+        {showPrintModal && motherCulture && (
           <QRPrintModal
             data={`motherculture:${id}`}
             title={motherCulture?.species?.name || motherCulture?.name}

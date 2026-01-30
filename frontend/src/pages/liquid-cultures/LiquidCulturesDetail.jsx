@@ -221,7 +221,7 @@ const LiquidCultureDetail = () => {
         </div>
 
         {/* Print Modal */}
-        {showPrintModal && (
+        {showPrintModal && liquidCulture && (
           <QRPrintModal
             data={`liquidculture:${id}`}
             title={liquidCulture?.species?.name || liquidCulture?.name}

@@ -263,7 +263,7 @@ const SubstrateDetail = () => {
         </div>
 
         {/* Print Modal */}
-        {showPrintModal && (
+        {showPrintModal && substrate && (
           <QRPrintModal
             data={`substrate:${id}`}
             title={substrate?.grainSpawn?.species?.name || 'Unknown Species'}

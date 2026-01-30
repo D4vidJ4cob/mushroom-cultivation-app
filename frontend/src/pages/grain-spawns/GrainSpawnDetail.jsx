@@ -286,7 +286,7 @@ const GrainSpawnDetail = () => {
         </div>
 
         {/* Print modal (outside AsyncData but inside container) */}
-        {showPrintModal && (
+        {showPrintModal && grainSpawn && (
           <QRPrintModal
             data={`grainspawn:${id}`}
             title={grainSpawn?.species?.name || 'Unknown Species'}
