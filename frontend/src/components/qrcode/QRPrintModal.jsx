@@ -2,14 +2,14 @@ import { useEffect, useRef } from 'react';
 import QRCode from 'qrcode';
 
 /**
- * QRPrintModal - Compact design voor Brother QL-810W
+ * QRPrintModal - Compact design for Brother QL-810W
  *
  * Layout:
- * - Species naam (48px, bold)
+ * - Name (48px, bold)
  * - QR Code (45×45mm = 500×500px)
- * - Datum (32px)
+ * - Date (32px)
  *
- * Total: 62mm breed × ~60mm hoog
+ * Total: 62mm breed × ~60mm high
  */
 export default function QRPrintModal({ data, title, date, onClose, onPrint }) {
   const canvasRef = useRef(null);
@@ -20,7 +20,7 @@ export default function QRPrintModal({ data, title, date, onClose, onPrint }) {
 
     const ctx = canvas.getContext('2d');
 
-    // Canvas size: 62mm breed × 60mm hoog
+    // Canvas size: 62mm breed × 60mm high
     // @ 300 DPI: 696×700 pixels
     canvas.width = 696;
     canvas.height = 700;
@@ -39,7 +39,7 @@ export default function QRPrintModal({ data, title, date, onClose, onPrint }) {
     // ========================================
     ctx.font = 'bold 48px Arial';
 
-    // Text wrapping voor lange namen
+    // Text wrapping for long names
     const maxWidth = canvas.width - 40;
     const titleLines = wrapText(ctx, title, maxWidth);
 

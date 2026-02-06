@@ -224,7 +224,7 @@ const LiquidCultureDetail = () => {
         {showPrintModal && liquidCulture && (
           <QRPrintModal
             data={`liquidculture:${id}`}
-            title={liquidCulture?.species?.name || liquidCulture?.name}
+            title={liquidCulture?.name}
             date={`Inoculated: ${new Date(liquidCulture?.inoculationDate).toLocaleDateString('nl-BE')}`}
             onClose={() => setShowPrintModal(false)}
             onPrint={() => setShowPrintModal(false)}

@@ -289,7 +289,12 @@ const GrainSpawnDetail = () => {
         {showPrintModal && grainSpawn && (
           <QRPrintModal
             data={`grainspawn:${id}`}
-            title={grainSpawn?.species?.name || 'Unknown Species'}
+            title={
+              grainSpawn.motherCulture?.name ||
+              grainSpawn.liquidCulture?.name ||
+              grainSpawn.species?.name || // Fallback: species name
+              'Unknown' // Final fallback
+            }
             date={`Inoculated: ${new Date(grainSpawn?.inoculationDate).toLocaleDateString('nl-BE')}`}
             onClose={() => setShowPrintModal(false)}
             onPrint={() => setShowPrintModal(false)}
