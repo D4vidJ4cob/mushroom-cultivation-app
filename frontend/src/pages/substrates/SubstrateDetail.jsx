@@ -266,7 +266,11 @@ const SubstrateDetail = () => {
         {showPrintModal && substrate && (
           <QRPrintModal
             data={`substrate:${id}`}
-            title={substrate?.grainSpawn?.species?.name || 'Unknown Species'}
+            title={
+              substrate?.grainSpawn?.motherCulture?.name ||
+              substrate?.grainSpawn.liquidCulture?.name ||
+              'Unknown Species'
+            }
             date={
               substrate?.incubationDate
                 ? `Incubated: ${new Date(substrate.incubationDate).toLocaleDateString('nl-BE')}`
