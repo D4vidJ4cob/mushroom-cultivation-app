@@ -5,8 +5,6 @@ import {
   drizzleProvider,
   InjectDrizzle,
 } from './drizzle.provider';
-import path from 'node:path';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
 
 @Module({
   providers: [...drizzleProvider],
@@ -17,13 +15,17 @@ export class DrizzleModule implements OnModuleDestroy, OnModuleInit {
 
   constructor(@InjectDrizzle() private readonly db: DatabaseProvider) {}
 
-  async onModuleInit() {
-    this.logger.log('⏳ Running migrations...');
+  // async onModuleInit() {
+  //   this.logger.log('⏳ Running migrations...');
 
-    await migrate(this.db, {
-      migrationsFolder: path.resolve('migrations'),
-    });
-    this.logger.log('✅ Migrations completed!');
+  //   await migrate(this.db, {
+  //     migrationsFolder: path.resolve('migrations'),
+  //   });
+  //   this.logger.log('✅ Migrations completed!');
+  // }
+
+  onModuleInit() {
+    this.logger.log('⏭️ Skipping automatic migrations');
   }
 
   async onModuleDestroy() {
