@@ -3,6 +3,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsDateString } from 'class-validator';
 import { IsString, IsBoolean, IsNumber } from 'nestjs-swagger-dto';
 import { SpeciesResponseDto } from '../species/species.dto';
+import { LiquidCultureResponseDto } from '../liquid-culture/liquid-culture.dto';
+import { MotherCultureResponseDto } from '../mother-culture/mother-culture.dto';
 
 export class CreateGrainSpawnRequestDto {
   @IsDateString()
@@ -80,9 +82,6 @@ export class GrainSpawnResponseDto {
     nullable: true,
   })
   liquidCultureId: number | null;
-
-  @ApiProperty({ type: () => SpeciesResponseDto })
-  species: SpeciesResponseDto;
 }
 
 export class GrainSpawnDetailResponseDto extends GrainSpawnResponseDto {
@@ -92,6 +91,23 @@ export class GrainSpawnDetailResponseDto extends GrainSpawnResponseDto {
     nullable: true,
   })
   characteristic: string | null;
+
+  @ApiProperty({ type: () => SpeciesResponseDto })
+  species: SpeciesResponseDto;
+
+  @ApiProperty({
+    type: () => MotherCultureResponseDto,
+    required: false,
+    nullable: true,
+  })
+  motherCulture?: MotherCultureResponseDto | null;
+
+  @ApiProperty({
+    type: () => LiquidCultureResponseDto,
+    required: false,
+    nullable: true,
+  })
+  liquidCulture?: LiquidCultureResponseDto | null;
 }
 
 export class GrainSpawnsListResponseDto {

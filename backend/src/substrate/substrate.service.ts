@@ -69,6 +69,8 @@ export class SubstrateService {
         grainSpawn: {
           with: {
             species: true,
+            motherCulture: true,
+            liquidCulture: true,
           },
         },
       },

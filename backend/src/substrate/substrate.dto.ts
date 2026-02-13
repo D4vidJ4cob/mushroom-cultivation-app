@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsDateString } from 'class-validator';
+import { IsOptional, IsDateString, Max, Min } from 'class-validator';
 import { IsBoolean, IsNumber } from 'nestjs-swagger-dto';
 import { GrainSpawnResponseDto } from '../grain-spawn/grain-spawn.dto';
 
@@ -18,6 +18,12 @@ export class CreateSubstrateRequestDto {
   @IsBoolean({ name: 'contaminationStatus' })
   @IsOptional()
   contaminationStatus?: boolean;
+
+  @IsNumber()
+  @Min(1)
+  @Max(50)
+  @IsOptional()
+  quantity?: number;
 }
 
 export class UpdateSubstrateRequestDto extends PartialType(

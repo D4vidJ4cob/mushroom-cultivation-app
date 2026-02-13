@@ -40,7 +40,7 @@ export class GrainSpawnService {
 
   async getAll(): Promise<GrainSpawnsListResponseDto> {
     const items = await this.db.query.grainSpawns.findMany({
-      // TODO: mss werken met columns voor performantie?
+      // TODO: maybe colums for performance?
       with: {
         species: true,
         liquidCulture: true,
