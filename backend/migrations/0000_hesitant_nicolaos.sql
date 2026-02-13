@@ -1,4 +1,8 @@
-CREATE TYPE "public"."role" AS ENUM('manager', 'worker');--> statement-breakpoint
+DO $$ BEGIN
+  CREATE TYPE "public"."role" AS ENUM('manager', 'worker');
+EXCEPTION
+  WHEN duplicate_object THEN null;
+END $$;--> statement-breakpoint
 CREATE TABLE "batch_assignments" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
