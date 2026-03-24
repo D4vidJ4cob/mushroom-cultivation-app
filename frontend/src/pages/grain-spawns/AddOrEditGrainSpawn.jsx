@@ -5,7 +5,7 @@ import useSWRMutation from 'swr/mutation';
 import { useParams, useNavigate } from 'react-router';
 import AsyncData from '../../components/AsyncData';
 import GrainSpawnForm from '../../components/grain-spawns/GrainSpawnForm';
-import BatchQRPrintModal from '../../components/qrcode/BatchQrPrintModal';
+import BatchQRPrintModal from '../../components/qrcode/BatchQRPrintModal';
 import { FaFlask } from 'react-icons/fa';
 
 export default function AddOrEditGrainSpawn() {
