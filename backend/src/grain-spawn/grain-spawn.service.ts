@@ -8,6 +8,8 @@ import {
   InjectDrizzle,
 } from '../drizzle/drizzle.provider';
 import {
+  BulkCreateGrainSpawnRequestDto,
+  BulkCreateGrainSpawnResponseDto,
   CreateGrainSpawnRequestDto,
   GrainSpawnDetailResponseDto,
   GrainSpawnsListResponseDto,
@@ -85,6 +87,42 @@ export class GrainSpawnService {
       .returning({ id: grainSpawns.id });
 
     return this.getById(newGrainSpawn.id);
+  }
+
+  async createBulk(
+    bulkDto: BulkCreateGrainSpawnRequestDto,
+  ): Promise<BulkCreateGrainSpawnResponseDto> {
+    const inoculationDate = this.validateAndParseDate(
+      bulkDto.inoculationDate,
+      'inoculation date',
+    );
+
+    const rows = Array.from({ length: bulkDto.quantity }, () => ({
+      speciesId: bulkDto.speciesId,
+      inoculationDate,
+      ...(bulkDto.characteristic && { characteristic: bulkDto.characteristic }),
+      ...(bulkDto.contaminationStatus !== undefined && {
+        contaminationStatus: bulkDto.contaminationStatus,
+      }),
+      ...(bulkDto.shaken !== undefined && { shaken: bulkDto.shaken }),
+      ...(bulkDto.motherCultureId && {
+        motherCultureId: bulkDto.motherCultureId,
+      }),
+      ...(bulkDto.liquidCultureId && {
+        liquidCultureId: bulkDto.liquidCultureId,
+      }),
+    }));
+
+    const newGrainSpawns = await this.db
+      .insert(grainSpawns)
+      .values(rows)
+      .returning({ id: grainSpawns.id });
+
+    const items = await Promise.all(
+      newGrainSpawns.map((gs) => this.getById(gs.id)),
+    );
+
+    return { items };
   }
 
   async updateById(

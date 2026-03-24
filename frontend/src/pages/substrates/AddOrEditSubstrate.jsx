@@ -1,15 +1,18 @@
+import { useState } from 'react';
 import useSWR from 'swr';
-import { getAll, getById, save } from '../../api';
+import { getAll, getById, save, post } from '../../api';
 import useSWRMutation from 'swr/mutation';
-import AsyncData from '../../components/AsyncData';
 import { useNavigate, useParams } from 'react-router';
+import AsyncData from '../../components/AsyncData';
 import SubstrateForm from '../../components/substrates/SubstrateForm';
+import BatchQRPrintModal from '../../components/qrcode/BatchQRPrintModal';
 import { FaFlask } from 'react-icons/fa';
 
 export default function AddOrEditSubstrate() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
+  const [batchItems, setBatchItems] = useState(null);
 
   const {
     data: substrate,
@@ -29,6 +32,20 @@ export default function AddOrEditSubstrate() {
     'substrates',
     save,
   );
+
+  const { trigger: bulkCreateSubstrate, error: bulkError } = useSWRMutation(
+    'substrates/bulk',
+    post,
+  );
+
+  const handleBatchCreated = (items) => {
+    setBatchItems(items);
+  };
+
+  const handleBatchModalClose = () => {
+    setBatchItems(null);
+    navigate('/substrates');
+  };
 
   return (
     <div
@@ -57,19 +74,39 @@ export default function AddOrEditSubstrate() {
       <div className="max-w-3xl mx-auto">
         <div className="content-card">
           <AsyncData
-            error={substrateError || grainSpawnsError || saveError}
+            error={substrateError || grainSpawnsError || saveError || bulkError}
             loading={substrateLoading || grainSpawnsLoading}
           >
             <SubstrateForm
               substrate={substrate}
               grainSpawns={grainSpawns}
               saveSubstrate={saveSubstrate}
+              bulkCreateSubstrate={bulkCreateSubstrate}
               isEditing={isEditing}
               navigate={navigate}
+              onBatchCreated={handleBatchCreated}
             />
           </AsyncData>
         </div>
       </div>
+
+      {/* Batch QR Print Modal */}
+      {batchItems && (
+        <BatchQRPrintModal
+          items={batchItems}
+          type="substrate"
+          titleFn={(item) =>
+            item.grainSpawn?.motherCulture?.name ||
+            item.grainSpawn?.liquidCulture?.name ||
+            item.grainSpawn?.species?.name ||
+            'Unknown'
+          }
+          dateFn={(item) =>
+            `Inoculated: ${new Date(item.inoculationDate).toLocaleDateString('nl-BE')}`
+          }
+          onClose={handleBatchModalClose}
+        />
+      )}
     </div>
   );
 }

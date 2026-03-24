@@ -15,8 +15,10 @@ export default function GrainSpawnForm({
   motherCultures,
   liquidCultures,
   saveGrainSpawn,
+  bulkCreateGrainSpawn,
   isEditing,
   navigate,
+  onBatchCreated,
 }) {
   const {
     values,
@@ -42,6 +44,7 @@ export default function GrainSpawnForm({
 
       motherCultureId: grainSpawn?.motherCultureId || '',
       liquidCultureId: grainSpawn?.liquidCultureId || '',
+      quantity: 1,
     },
     validationSchema: grainSpawnSchema,
     enableReinitialize: true,
@@ -61,22 +64,26 @@ export default function GrainSpawnForm({
           }),
         };
 
-        const payload = isEditing ? { id: grainSpawn.id, ...data } : data;
+        const qty = parseInt(values.quantity) || 1;
 
-        // Save and get the result (which includes the ID for new records)
+        if (!isEditing && qty > 1 && bulkCreateGrainSpawn) {
+          const result = await bulkCreateGrainSpawn({ ...data, quantity: qty });
+          if (result?.items?.length && onBatchCreated) {
+            onBatchCreated(result.items);
+          }
+          return;
+        }
+
+        const payload = isEditing ? { id: grainSpawn.id, ...data } : data;
         const savedGrainSpawn = await saveGrainSpawn(payload);
 
-        // Navigate to detail page
         if (!isEditing && savedGrainSpawn?.id) {
-          // For new records: navigate with print prompt
           navigate(`/grain-spawns/${savedGrainSpawn.id}`, {
             state: { showPrintPrompt: true },
           });
         } else if (isEditing) {
-          // For edits: navigate without print prompt
           navigate(`/grain-spawns/${grainSpawn.id}`);
         } else {
-          // Fallback: navigate to list if something went wrong
           navigate('/grain-spawns');
         }
       } catch (err) {
@@ -189,6 +196,19 @@ export default function GrainSpawnForm({
         disabled={isSubmitting}
       />
 
+      {!isEditing && (
+        <LabelInput
+          label="Quantity"
+          type="number"
+          min="1"
+          max="50"
+          {...getFieldProps('quantity')}
+          touched={touched.quantity}
+          error={errors.quantity}
+          disabled={isSubmitting}
+        />
+      )}
+
       <div className="flex justify-end gap-3 mt-8">
         <button
           type="button"
@@ -220,7 +240,9 @@ export default function GrainSpawnForm({
             ? 'Saving...'
             : isEditing
               ? 'Update Grain Spawn'
-              : 'Add Grain Spawn'}
+              : parseInt(values.quantity) > 1
+                ? `Add ${values.quantity} Grain Spawns`
+                : 'Add Grain Spawn'}
         </button>
       </div>
     </form>

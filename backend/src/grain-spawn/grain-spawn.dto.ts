@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsDateString } from 'class-validator';
+import { IsOptional, IsDateString, Min, Max } from 'class-validator';
 import { IsString, IsBoolean, IsNumber } from 'nestjs-swagger-dto';
 import { SpeciesResponseDto } from '../species/species.dto';
 import { LiquidCultureResponseDto } from '../liquid-culture/liquid-culture.dto';
@@ -113,4 +113,42 @@ export class GrainSpawnDetailResponseDto extends GrainSpawnResponseDto {
 export class GrainSpawnsListResponseDto {
   @ApiProperty({ type: () => [GrainSpawnResponseDto] })
   items: GrainSpawnResponseDto[];
+}
+
+export class BulkCreateGrainSpawnRequestDto {
+  @IsDateString()
+  inoculationDate: string;
+
+  @IsNumber({ name: 'speciesId', min: 1 })
+  speciesId: number;
+
+  @IsString({ name: 'characteristic', maxLength: 255 })
+  @IsOptional()
+  characteristic?: string;
+
+  @IsBoolean({ name: 'contaminationStatus' })
+  @IsOptional()
+  contaminationStatus?: boolean;
+
+  @IsBoolean({ name: 'shaken' })
+  @IsOptional()
+  shaken?: boolean;
+
+  @IsNumber({ name: 'motherCultureId', min: 1 })
+  @IsOptional()
+  motherCultureId?: number;
+
+  @IsNumber({ name: 'liquidCultureId', min: 1 })
+  @IsOptional()
+  liquidCultureId?: number;
+
+  @IsNumber({ name: 'quantity', min: 1 })
+  @Min(1)
+  @Max(50)
+  quantity: number;
+}
+
+export class BulkCreateGrainSpawnResponseDto {
+  @ApiProperty({ type: () => [GrainSpawnDetailResponseDto] })
+  items: GrainSpawnDetailResponseDto[];
 }

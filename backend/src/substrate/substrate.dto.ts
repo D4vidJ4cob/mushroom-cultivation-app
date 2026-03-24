@@ -111,3 +111,29 @@ export class SubstrateAssignmentListResponseDto {
   @ApiProperty({ type: () => [SubstrateAssignmentResponseDto] })
   items: SubstrateAssignmentResponseDto[];
 }
+
+export class BulkCreateSubstrateRequestDto {
+  @IsNumber({ name: 'grainSpawnId', min: 1 })
+  grainSpawnId: number;
+
+  @IsDateString()
+  inoculationDate: string;
+
+  @IsDateString()
+  @IsOptional()
+  incubationDate?: string;
+
+  @IsBoolean({ name: 'contaminationStatus' })
+  @IsOptional()
+  contaminationStatus?: boolean;
+
+  @IsNumber({ name: 'quantity', min: 1 })
+  @Min(1)
+  @Max(50)
+  quantity: number;
+}
+
+export class BulkCreateSubstrateResponseDto {
+  @ApiProperty({ type: () => [SubstrateDetailResponseDto] })
+  items: SubstrateDetailResponseDto[];
+}

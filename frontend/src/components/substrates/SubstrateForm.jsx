@@ -13,8 +13,10 @@ export default function SubstrateForm({
   substrate,
   grainSpawns,
   saveSubstrate,
+  bulkCreateSubstrate,
   isEditing,
   navigate,
+  onBatchCreated,
 }) {
   const {
     values,
@@ -33,27 +35,34 @@ export default function SubstrateForm({
         ? formatDateForInput(substrate.incubationDate)
         : '',
       contaminationStatus: substrate?.contaminationStatus ?? false,
+      quantity: 1,
     },
     validationSchema: substrateSchema,
     enableReinitialize: true,
     onSubmit: async (values) => {
       try {
-        const payload = isEditing ? { id: substrate.id, ...values } : values;
+        const { quantity, ...data } = values;
+        const qty = parseInt(quantity) || 1;
 
-        // Save and get the result (which includes the ID for new records)
+        if (!isEditing && qty > 1 && bulkCreateSubstrate) {
+          const result = await bulkCreateSubstrate({ ...data, quantity: qty });
+          if (result?.items?.length && onBatchCreated) {
+            onBatchCreated(result.items);
+          }
+          return;
+        }
+
+        const payload = isEditing ? { id: substrate.id, ...data } : data;
+
         const savedSubstrate = await saveSubstrate(payload);
 
-        // Navigate to detail page
         if (!isEditing && savedSubstrate?.id) {
-          // For new records: navigate with print prompt
           navigate(`/substrates/${savedSubstrate.id}`, {
             state: { showPrintPrompt: true },
           });
         } else if (isEditing) {
-          // For edits: navigate without print prompt
           navigate(`/substrates/${substrate.id}`);
         } else {
-          // Fallback: navigate to list if something went wrong
           navigate('/substrates');
         }
       } catch (err) {
@@ -113,6 +122,19 @@ export default function SubstrateForm({
         disabled={isSubmitting}
       />
 
+      {!isEditing && (
+        <LabelInput
+          label="Quantity"
+          type="number"
+          min="1"
+          max="50"
+          {...getFieldProps('quantity')}
+          touched={touched.quantity}
+          error={errors.quantity}
+          disabled={isSubmitting}
+        />
+      )}
+
       <div className="flex justify-end gap-3 mt-8">
         <button
           type="button"
@@ -144,7 +166,9 @@ export default function SubstrateForm({
             ? 'Saving...'
             : isEditing
               ? 'Update Substrate'
-              : 'Add Substrate'}
+              : parseInt(values.quantity) > 1
+                ? `Add ${values.quantity} Substrates`
+                : 'Add Substrate'}
         </button>
       </div>
     </form>

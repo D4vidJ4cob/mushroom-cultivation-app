@@ -8,6 +8,8 @@ import {
   InjectDrizzle,
 } from '../drizzle/drizzle.provider';
 import {
+  BulkCreateSubstrateRequestDto,
+  BulkCreateSubstrateResponseDto,
   CreateSubstrateRequestDto,
   SubstrateAssignmentListResponseDto,
   SubstrateDetailResponseDto,
@@ -105,6 +107,39 @@ export class SubstrateService {
       .returning({ id: substrates.id });
 
     return this.getById(newSubstrate.id);
+  }
+
+  async createBulk(
+    bulkDto: BulkCreateSubstrateRequestDto,
+  ): Promise<BulkCreateSubstrateResponseDto> {
+    const inoculationDate = this.validateAndParseDate(
+      bulkDto.inoculationDate,
+      'inoculation date',
+    );
+
+    const incubationDate = bulkDto.incubationDate
+      ? this.validateAndParseDate(bulkDto.incubationDate, 'incubation date')
+      : undefined;
+
+    const rows = Array.from({ length: bulkDto.quantity }, () => ({
+      grainSpawnId: bulkDto.grainSpawnId,
+      inoculationDate,
+      ...(incubationDate && { incubationDate }),
+      ...(bulkDto.contaminationStatus !== undefined && {
+        contaminationStatus: bulkDto.contaminationStatus,
+      }),
+    }));
+
+    const newSubstrates = await this.db
+      .insert(substrates)
+      .values(rows)
+      .returning({ id: substrates.id });
+
+    const items = await Promise.all(
+      newSubstrates.map((s) => this.getById(s.id)),
+    );
+
+    return { items };
   }
 
   async updateById(

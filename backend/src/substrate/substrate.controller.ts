@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { SubstrateService } from './substrate.service';
 import {
+  BulkCreateSubstrateRequestDto,
+  BulkCreateSubstrateResponseDto,
   CreateSubstrateRequestDto,
   SubstrateDetailResponseDto,
   SubstrateListResponseDto,
@@ -34,6 +36,19 @@ export class SubstrateController {
   @Get()
   async getAllSubstrates(): Promise<SubstrateListResponseDto> {
     return await this.substrateService.getAll();
+  }
+
+  @ApiResponse({
+    status: 201,
+    description: 'Bulk create substrates',
+    type: BulkCreateSubstrateResponseDto,
+  })
+  @Post('bulk')
+  @HttpCode(HttpStatus.CREATED)
+  async bulkCreateSubstrates(
+    @Body() bulkCreateDto: BulkCreateSubstrateRequestDto,
+  ): Promise<BulkCreateSubstrateResponseDto> {
+    return this.substrateService.createBulk(bulkCreateDto);
   }
 
   @ApiResponse({

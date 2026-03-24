@@ -12,6 +12,8 @@ import {
 } from '@nestjs/common';
 import { GrainSpawnService } from './grain-spawn.service';
 import {
+  BulkCreateGrainSpawnRequestDto,
+  BulkCreateGrainSpawnResponseDto,
   CreateGrainSpawnRequestDto,
   GrainSpawnDetailResponseDto,
   GrainSpawnsListResponseDto,
@@ -33,6 +35,19 @@ export class GrainSpawnController {
   @Get()
   async getAllGrainSpawns(): Promise<GrainSpawnsListResponseDto> {
     return await this.grainSpawnService.getAll();
+  }
+
+  @ApiResponse({
+    status: 201,
+    description: 'Bulk create grain spawns',
+    type: BulkCreateGrainSpawnResponseDto,
+  })
+  @Post('bulk')
+  @HttpCode(HttpStatus.CREATED)
+  async bulkCreateGrainSpawns(
+    @Body() bulkCreateDto: BulkCreateGrainSpawnRequestDto,
+  ): Promise<BulkCreateGrainSpawnResponseDto> {
+    return this.grainSpawnService.createBulk(bulkCreateDto);
   }
 
   @ApiResponse({

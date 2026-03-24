@@ -56,4 +56,25 @@ export const substrateSchema = yup.object({
     .nullable()
     .notRequired()
     .max(new Date(), 'Incubation date cannot be in the future'),
+  quantity: yup
+    .number()
+    .min(1, 'Quantity must be at least 1')
+    .max(50, 'Quantity cannot exceed 50')
+    .default(1),
+});
+ 
+export const bulkSubstrateSchema = yup.object({
+  grainSpawnId: yup.number().required('Grain spawn is required').positive(),
+  ...commonCultureFields,
+  contaminationStatus: yup.boolean().default(false),
+  incubationDate: yup
+    .date()
+    .nullable()
+    .notRequired()
+    .max(new Date(), 'Incubation date cannot be in the future'),
+  quantity: yup
+    .number()
+    .required('Quantity is required')
+    .min(1, 'Quantity must be at least 1')
+    .max(50, 'Quantity cannot exceed 50'),
 });

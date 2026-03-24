@@ -1,15 +1,18 @@
+import { useState } from 'react';
 import useSWR from 'swr';
-import { getAll, getById, save } from '../../api';
+import { getAll, getById, save, post } from '../../api';
 import useSWRMutation from 'swr/mutation';
 import { useParams, useNavigate } from 'react-router';
 import AsyncData from '../../components/AsyncData';
 import GrainSpawnForm from '../../components/grain-spawns/GrainSpawnForm';
+import BatchQRPrintModal from '../../components/qrcode/BatchQrPrintModal';
 import { FaFlask } from 'react-icons/fa';
 
 export default function AddOrEditGrainSpawn() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = Boolean(id);
+  const [batchItems, setBatchItems] = useState(null);
 
   const {
     data: grainSpawn,
@@ -41,6 +44,20 @@ export default function AddOrEditGrainSpawn() {
     'grain-spawns',
     save,
   );
+
+  const { trigger: bulkCreateGrainSpawn, error: bulkError } = useSWRMutation(
+    'grain-spawns/bulk',
+    post,
+  );
+
+  const handleBatchCreated = (items) => {
+    setBatchItems(items);
+  };
+
+  const handleBatchModalClose = () => {
+    setBatchItems(null);
+    navigate('/grain-spawns');
+  };
 
   return (
     <div
@@ -74,7 +91,8 @@ export default function AddOrEditGrainSpawn() {
               speciesError ||
               motherCulturesError ||
               liquidCulturesError ||
-              saveError
+              saveError ||
+              bulkError
             }
             loading={
               grainSpawnLoading ||
@@ -89,12 +107,32 @@ export default function AddOrEditGrainSpawn() {
               motherCultures={motherCultures}
               liquidCultures={liquidCultures}
               saveGrainSpawn={saveGrainSpawn}
+              bulkCreateGrainSpawn={bulkCreateGrainSpawn}
               isEditing={isEditing}
               navigate={navigate}
+              onBatchCreated={handleBatchCreated}
             />
           </AsyncData>
         </div>
       </div>
+
+      {/* Batch QR Print Modal */}
+      {batchItems && (
+        <BatchQRPrintModal
+          items={batchItems}
+          type="grainspawn"
+          titleFn={(item) =>
+            item.motherCulture?.name ||
+            item.liquidCulture?.name ||
+            item.species?.name ||
+            'Unknown'
+          }
+          dateFn={(item) =>
+            `Inoculated: ${new Date(item.inoculationDate).toLocaleDateString('nl-BE')}`
+          }
+          onClose={handleBatchModalClose}
+        />
+      )}
     </div>
   );
 }
