@@ -1,15 +1,16 @@
-import { useParams, useLocation } from 'react-router';
+import { useParams, useLocation, useNavigate } from 'react-router';
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import { getById } from '../../api';
+import useSWRMutation from 'swr/mutation';
+import { getById, deleteById } from '../../api';
 import AsyncData from '../../components/AsyncData';
 import {
-  FaBoxes,
   FaCalendar,
   FaSeedling,
   FaExclamationTriangle,
   FaUser,
   FaUsers,
+  FaTrash,
 } from 'react-icons/fa';
 import { Link } from 'react-router';
 import QRCodeDisplay from '../../components/qrcode/QRCodeDisplay';
@@ -18,6 +19,7 @@ import QRPrintModal from '../../components/qrcode/QRPrintModal';
 const SubstrateDetail = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [showPrintModal, setShowPrintModal] = useState(false);
 
   const {
@@ -25,6 +27,16 @@ const SubstrateDetail = () => {
     error,
     isLoading,
   } = useSWR(`substrates/${id}`, getById);
+
+  const { trigger: deleteSubstrates } = useSWRMutation(
+    'substrates',
+    deleteById,
+  );
+
+  const handleDelete = async () => {
+    await deleteSubstrates(id);
+    navigate('/substrates');
+  };
 
   // Check if we should show print prompt
   useEffect(() => {
@@ -56,25 +68,39 @@ const SubstrateDetail = () => {
           <AsyncData error={error} loading={isLoading}>
             {substrate && (
               <div>
-                {/* Header */}
-                <div className="flex items-center gap-4 mb-8">
-                  <div
-                    className="p-3 bg-linear-to-br from-indigo-400 to-purple-500 
-                  dark:from-indigo-500 dark:to-purple-600 rounded-2xl shadow-lg"
-                  >
-                    <FaBoxes className="w-8 h-8 text-white" />
-                  </div>
-                  <div>
-                    <h1
-                      className="text-4xl font-bold bg-linear-to-r from-indigo-600 
-                    to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent"
+                <div className="flex items-center justify-between gap-4 mb-8">
+                  <div className="flex items-center gap-4">
+                    <div
+                      className="icon-badge bg-linear-to-br from-amber-400 to-orange-500
+                    dark:from-amber-500 dark:to-orange-600 "
                     >
-                      Substrate #{substrate.id}
-                    </h1>
-                    <p className="text-gray-600 dark:text-gray-400 mt-1">
-                      {substrate.grainSpawn?.species?.name || 'Unknown Species'}
-                    </p>
+                      <FaSeedling className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h1
+                        className="text-4xl font-bold bg-linear-to-r from-amber-600
+                      to-orange-600 dark:from-amber-400 dark:to-orange-400 bg-clip-text text-transparent"
+                      >
+                        Substrate #{substrate.id}
+                      </h1>
+                    </div>
                   </div>
+                  <button
+                    onClick={handleDelete}
+                    className="group/btn p-3 bg-linear-to-br from-red-400 to-rose-500
+                    hover:from-red-500 hover:to-rose-600
+                    dark:from-red-500 dark:to-rose-600 dark:hover:from-red-400 dark:hover:to-rose-500
+                    text-white rounded-xl shadow-md hover:shadow-lg
+                    transform hover:scale-110 active:scale-95 transition-all duration-300
+                    relative overflow-hidden"
+                    aria-label="Delete"
+                  >
+                    <span
+                      className="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100
+                    transition-transform duration-300 rounded-xl"
+                    ></span>
+                    <FaTrash className="w-4 h-4 relative z-10" />
+                  </button>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
