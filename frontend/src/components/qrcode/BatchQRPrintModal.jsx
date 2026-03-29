@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import QRCode from 'qrcode';
+import JSZip from 'jszip';
 
 const CANVAS_WIDTH = 696;
 const CANVAS_HEIGHT = 700;
@@ -108,15 +109,22 @@ export default function BatchQRPrintModal({
     renderAll();
   }, [items, type, titleFn, dateFn]);
 
-  const handleDownloadAll = () => {
+  const handleDownloadAll = async () => {
+    const zip = new JSZip();
+
     canvasRefs.current.forEach((canvas, i) => {
-      if (!canvas) return;
-      const url = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
-      link.download = `qr-${type}-${items[i].id}.png`;
-      link.href = url;
-      link.click();
+      const dataUrl = canvas.toDataURL('image/png');
+      const base64 = dataUrl.split(',')[1];
+      zip.file(`qr-${type}-${items[i].id}.png`, base64, { base64: true });
     });
+
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = `qr-${type}-labels.zip`;
+    link.href = url;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleDownloadSingle = (index) => {

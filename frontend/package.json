@@ -16,6 +16,7 @@
     "axios": "^1.13.2",
     "formik": "^2.4.9",
     "html5-qrcode": "^2.3.8",
+    "jszip": "^3.10.1",
     "lucide-react": "^0.554.0",
     "qrcode": "^1.5.4",
     "react": "^19.1.1",
